@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>What Did I Miss?</title>
+    <style>
+        body {
+            width: 500px;
+            height: 500px;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 16px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        #url {
+            font-weight: bold;
+        }
+
+        #group-name {
+            font-weight: bold;
+        }
+
+        #messageCount {
+            font-weight: bold;
+        }
+
+        #details-button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007acc;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #details-button:hover {
+            background-color: #005f8b;
+        }
+    </style>
+</head>
+<body>
+    <h1>What Did I Miss?</h1>
+    <p>Group name: <span id="group-name"></span></p>
+    <p>Summarizing <span id="messageCount"></span> most recent messages...</p>
+    <p><span id="messages"></span></p>
+    <button id="details-button">Request More Details</button>
+    <script src="popup.js"></script>
+</body>
+</html>
