@@ -11,8 +11,9 @@ function restoreMessagesFromStorage(currentGroupName) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         chrome.storage.local.get(['savedGroupName', 'messagesContent'], function(result) {
             // If there is a saved group name and it's different from the current group name
-            if (result.savedGroupName && result.savedGroupName !== currentGroupName) {
+            if (result.savedGroupName !== currentGroupName) {
                 // Clear the storage
+                console.log('Group name changed, clearing storage');
                 chrome.storage.local.clear(function() {
                     console.log('Storage cleared due to group name change');
                     chrome.tabs.sendMessage(
@@ -21,12 +22,14 @@ function restoreMessagesFromStorage(currentGroupName) {
                     );
                 });
             } else {
+                console.log('Group name not changed, loading messages from storage');
                 // Else, if there is saved messages content, load it into the #messages div
                 if (result.messagesContent) {
                     document.getElementById('messages').innerHTML = result.messagesContent;
                     document.getElementById('summary-paragraphs').style.display = 'block';
                 }
             }
+            saveGroupName(currentGroupName);
         });
     });
 }
@@ -45,7 +48,6 @@ chrome.runtime.onMessage.addListener(
                 case 'group_name':
                     document.getElementById('group-name').textContent = request.dom;
                     restoreMessagesFromStorage(request.dom);
-                    saveGroupName(request.dom);
                     break;
                 case 'messages':
                     if (request.dom.messageCount > 0) {
