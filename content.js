@@ -9,7 +9,7 @@ const bodyJSON = {
 };
 
 chrome.runtime.onMessage.addListener(
-    function(request, sender) {
+    async function(request, sender) {
         switch(request.message) {
             case "get_group_name":
                 const groupName = document.querySelector('span[data-testid="conversation-info-header-chat-title"]');
@@ -35,15 +35,15 @@ chrome.runtime.onMessage.addListener(
                             }
                         }
                     });
+                    let messageSummary = "";
                     if (messageCount > 0) {
                         bodyJSON.messages.push({
                             "role": "user",
                             "content": `${messageText}`
                         });
-                        getSummary(bodyJSON, messageCount);
-                    } else {
-                        chrome.runtime.sendMessage({ type: "messages", dom: {messageCount: messageCount, messageText: ""} });
+                        messageSummary = await callOpenAI(bodyJSON);
                     }
+                    chrome.runtime.sendMessage({ type: "messages", dom: {messageCount: messageCount, messageSummary: messageSummary} });
                 } else {
                     chrome.runtime.sendMessage({ type: "messages", dom: "not found" });
                 }
@@ -53,23 +53,14 @@ chrome.runtime.onMessage.addListener(
                     "role": "user",
                     "content": "Please be more descriptive. Keep writing in bullet points."
                 });
-                getDetails();
+                const messageSummary = await callOpenAI(bodyJSON);
+                chrome.runtime.sendMessage({ type: "messages", dom: { messageSummary: messageSummary } });
                 break;
             default:
                 console.log("Invalid message type");
         }
     }
 );
-
-async function getDetails() {
-    const response = await callOpenAI(bodyJSON);
-    chrome.runtime.sendMessage({ type: "messages", dom: { messageText: response } });
-}
-
-async function getSummary(bodyJSON, messageCount) {
-    const response = await callOpenAI(bodyJSON);
-    chrome.runtime.sendMessage({ type: "messages", dom: { messageCount: messageCount, messageText: response } });
-}
 
 async function callOpenAI(bodyJSON) {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {

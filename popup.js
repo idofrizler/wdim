@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener(
                 if (request.dom.messageCount > 0) {
                     document.getElementById('messageCount').textContent = request.dom.messageCount;
                 }
-                document.getElementById('messages').innerHTML = request.dom.messageText;
+                document.getElementById('messages').innerHTML = request.dom.messageSummary;
             }
         } else {
             console.error("Failed to get DOM from content script");
