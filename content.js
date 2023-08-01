@@ -49,7 +49,7 @@ chrome.runtime.onMessage.addListener(
                             "role": "user",
                             "content": `${messageText}`
                         });
-                        messageSummary = await callOpenAI(bodyJSON);
+                        messageSummary = await getSummaryFromBackend(bodyJSON);
                     }
                     // split messageText by <br> and take first item
                     const firstMessage = messageText.split("<br>")[0];
@@ -77,7 +77,7 @@ chrome.runtime.onMessage.addListener(
                     "role": "user",
                     "content": `${followupQuery}`
                 });
-                const messageSummary = await callOpenAI(bodyJSON);
+                const messageSummary = await getSummaryFromBackend(bodyJSON);
                 chrome.runtime.sendMessage({ type: "messages", dom: { messageSummary: messageSummary } });
                 break;
             default:
@@ -86,21 +86,19 @@ chrome.runtime.onMessage.addListener(
     }
 );
 
-async function callOpenAI(bodyJSON) {
-    // return "Test data";
+const BACKEND_URL = "https://wdim.azurewebsites.net/api/getSummary";
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+async function getSummaryFromBackend(bodyJSON) {
+    const response = await fetch(BACKEND_URL, {
         method: 'POST',
         headers: {
-            'Authorization': 'Bearer <bearer-token>',
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(bodyJSON),
     });
-    const data = await response.json();
-    const message = data.choices[0].message;
-    const openAIresponse = message.content.trim();
-    bodyJSON.messages.push(message);
+    const backendResponse = await response.json();
+    bodyJSON.messages.push(backendResponse);
 
-    return openAIresponse.replace(/\n/g, "<br>");
+    const messageText = backendResponse.content.trim();
+    return messageText.replace(/\n/g, "<br>");
 }
