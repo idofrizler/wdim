@@ -27,46 +27,24 @@ chrome.runtime.onMessage.addListener(
             case "get_messages":
                 const messagesDiv = document.querySelectorAll('div[role="row"]');
                 if (messagesDiv) {
-                    const maxMessages = 50;
-                    let startIndex = Math.max(0, messagesDiv.length - maxMessages);
-                    let messageText = "";
-                    let messageCount = 0;
-                    for (let i = startIndex; i < messagesDiv.length; i++) {
-                        const message = messagesDiv[i];
-                        const copyableText = message.querySelector('div.copyable-text');
-                        if (copyableText) {
-                            const span = copyableText.querySelector('span');
-                            if (span) {
-                                const prePlainText = copyableText.getAttribute('data-pre-plain-text');
-                                messageText += prePlainText + span.textContent + "<br>";
-                                messageCount++;
-                            }
-                        }
-                    }
+                    let messagesJson = parseHTMLRow(messagesDiv);
                     let messageSummary = "";
-                    if (messageCount > 0) {
+                    if (messagesJson.messageCount > 0) {
                         bodyJSON.messages.push({
                             "role": "user",
-                            "content": `${messageText}`
+                            "content": `${messagesJson.messageText}`
                         });
                         messageSummary = await getSummaryFromBackend(bodyJSON);
                     }
-                    // split messageText by <br> and take first item
-                    const firstMessage = messageText.split("<br>")[0];
-                    // split firstMessage by ] and take first item, including the ]
-                    const firstMessagePrefix = firstMessage.split("]")[0] + "]";
-                    // Extract the date using Regex from the first message, which looks like this: [22:46, 21/07/2023]
-                    const dateRegex = /\[(\d{2}):(\d{2}), (\d{2})\/(\d{2})\/(\d{4})\]/;
-                    const match = firstMessagePrefix.match(dateRegex);
-                    const date = `${match[5]}-${match[4]}-${match[3]}T${match[1]}:${match[2]}:00`;
-                    // Calculate the time passed since that date, in local time
-                    const timePassed = new Date() - new Date(date);
-                    // Format the time passed in a string reading "x days and y hours ago"
-                    const daysPassed = Math.floor(timePassed / (1000 * 60 * 60 * 24));
-                    const hoursPassed = Math.floor((timePassed / (1000 * 60 * 60)) % 24);
-                    const timePassedString = `${daysPassed} days and ${hoursPassed} hours ago`;
 
-                    chrome.runtime.sendMessage({ type: "messages", dom: {messageCount: messageCount, timePassedString: timePassedString, messageSummary: messageSummary} });
+                    let timePassedString = calcTimePassed(messagesJson.messageText);
+
+                    chrome.runtime.sendMessage({ type: "messages", dom: {
+                            messageCount: messagesJson.messageCount, 
+                            timePassedString: timePassedString, 
+                            messageSummary: messageSummary
+                        }
+                    });
                 } else {
                     chrome.runtime.sendMessage({ type: "messages", dom: "not found" });
                 }
