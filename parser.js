@@ -5,14 +5,36 @@ function parseHTMLRow(rowElements) {
     let messageCount = 0;
     for (let i = startIndex; i < rowElements.length; i++) {
         const message = rowElements[i];
+        messageCount++;
+
         const copyableText = message.querySelector('div.copyable-text');
         if (copyableText) {
-            const span = copyableText.querySelector('span');
-            if (span) {
-                const prePlainText = copyableText.getAttribute('data-pre-plain-text');
-                messageText += prePlainText + span.textContent + "<br>";
-                messageCount++;
+            const prePlainText = copyableText.getAttribute('data-pre-plain-text');
+            const imageCaption = message.querySelector('span[data-testid="image-caption"]');
+            if (imageCaption) { // Image + caption message
+                const caption = imageCaption.querySelector('span').textContent;
+                messageText += prePlainText.slice(0, -2) + " shared a photo with this caption: " + caption + "<br>";
+            } else { // Regular text message, possibly with link
+                const span = copyableText.querySelector('span');
+                if (span) {
+                    const hasLink = span.getAttribute('data-testid') === 'link-preview-title' ? true : false;
+                    if (hasLink) {
+                        messageText += prePlainText.slice(0, -2) + " shared a link: " + span.textContent + "<br>";
+                    } else {             
+                        messageText += prePlainText + span.textContent + "<br>";
+                    }
+                } else {
+                    console.log(`Error: span not found at index ${i}`);
+                }
             }
+        } else { // Image message
+            const imageThumb = message.querySelector('div[data-testid="image-thumb"]');
+            if (imageThumb) {
+    
+            } else {
+                
+            }
+    
         }
     }
 
