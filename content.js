@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener(
             case "get_messages":
                 const messagesDiv = document.querySelectorAll('div[role="row"]');
                 if (messagesDiv) {
-                    let messagesJson = parseHTMLRow(messagesDiv);
+                    let messagesJson = parseHTMLRows(messagesDiv);
                     let messageSummary = "";
                     if (messagesJson.messageCount > 0) {
                         bodyJSON.messages.push({

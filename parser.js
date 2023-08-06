@@ -1,11 +1,12 @@
-function parseHTMLRow(rowElements) {
-    const maxMessages = 50;
-    let startIndex = Math.max(0, rowElements.length - maxMessages);
+TOKEN_LIMIT_WITH_BUFFER = 3500;
+
+function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
     let messageText = "";
-    let messageCount = 0;
-    for (let i = startIndex; i < rowElements.length; i++) {
-        const message = rowElements[i];
-        messageCount++;
+    let msgIndex = 0;
+
+    // enumerate all messages in rowElements with index i
+    while (msgIndex < rowElements.length && messageText.split(" ").length <= tokenLimit) {
+        const message = rowElements[msgIndex];
 
         const copyableText = message.querySelector('div.copyable-text');
         if (copyableText) {
@@ -24,21 +25,22 @@ function parseHTMLRow(rowElements) {
                         messageText += prePlainText + span.textContent + "<br>";
                     }
                 } else {
-                    console.log(`Error: span not found at index ${i}`);
+                    console.log(`Error: span not found at index ${msgIndex}`);
                 }
             }
         } else { // Image message
             const imageThumb = message.querySelector('div[data-testid="image-thumb"]');
             if (imageThumb) {
-    
+                // TODO: implement
             } else {
-                
+                console.log(`Error: message type not idenfitied at index ${msgIndex}`);        
             }
-    
         }
+
+        msgIndex++;
     }
 
-    return {messageCount: messageCount, messageText: messageText};
+    return {messageCount: msgIndex, messageText: messageText};
 }
 
 function calcTimePassed(messageText) {
@@ -62,7 +64,10 @@ function calcTimePassed(messageText) {
     return `${daysPassed} days and ${hoursPassed} hours ago`;
 }
 
-module.exports = {
-    parseHTMLRow: parseHTMLRow,
-    calcTimePassed: calcTimePassed
-};
+try {
+    module.exports = {
+        parseHTMLRows: parseHTMLRows,
+        calcTimePassed: calcTimePassed
+    }
+}
+catch (e) {}
