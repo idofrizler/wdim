@@ -1,6 +1,6 @@
 # Project Summary
 
-This project aims to improve the user experience of the website by adding new features and fixing existing issues. The following is a list of tasks that need to be completed:
+This project aims to improve the user experience of the website by adding new features and fixing existing issues.
 
 # Usage
 
