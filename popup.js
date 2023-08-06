@@ -65,6 +65,9 @@ chrome.runtime.onMessage.addListener(
                     // make details-input visible
                     document.getElementById('details-input').style.display = 'block';
                     break;
+                case 'server_error':
+                    document.getElementById('messages').innerHTML = request.dom;
+                    break;
                 default:
                     console.error("Invalid request type");
             }

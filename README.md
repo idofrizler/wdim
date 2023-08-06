@@ -16,11 +16,10 @@ To use this project as a browser extension, follow these steps:
 
 * Add login
 * Identify images
-* Surface Server 500 errors from GPT to the user
-* Check token length
 * Limit requests (per hour/day?)
-* Premium version: longer content 16k, no limits
 * UX revamp
-* State machine of views
+* Rearchitect to use State machine of views (also change server error message display)
 * Follow-up text appended to summary
 * Buy me a coffee
+* Premium version: longer content 16k, no limits
+* Support more apps (Outlook? Gmail? Twitter?)

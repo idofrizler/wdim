@@ -37,6 +37,8 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
             }
         }
 
+        // TODO: support voice messages
+
         msgIndex++;
     }
 

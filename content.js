@@ -34,7 +34,13 @@ chrome.runtime.onMessage.addListener(
                             "role": "user",
                             "content": `${messagesJson.messageText}`
                         });
-                        messageSummary = await getSummaryFromBackend(bodyJSON);
+                        try {
+                            messageSummary = await getSummaryFromBackend(bodyJSON);
+                        } catch (error) {
+                            console.error(error);
+                            chrome.runtime.sendMessage({ type: "server_error", dom: error.message });
+                            return;
+                        }
                     }
 
                     let timePassedString = calcTimePassed(messagesJson.messageText);
@@ -55,7 +61,13 @@ chrome.runtime.onMessage.addListener(
                     "role": "user",
                     "content": `${followupQuery}`
                 });
-                const messageSummary = await getSummaryFromBackend(bodyJSON);
+                try {
+                    messageSummary = await getSummaryFromBackend(bodyJSON);
+                } catch (error) {
+                    console.error(error);
+                    chrome.runtime.sendMessage({ type: "server_error", dom: error.message });
+                    return;
+                }
                 chrome.runtime.sendMessage({ type: "messages", dom: { messageSummary: messageSummary } });
                 break;
             default:
@@ -74,6 +86,13 @@ async function getSummaryFromBackend(bodyJSON) {
         },
         body: JSON.stringify(bodyJSON),
     });
+
+    // Handle non-OK responses
+    if (!response.ok) {
+        const errorDetails = await response.text();
+        throw new Error(`Backend returned an error: ${response.status} ${response.statusText}. Details: ${errorDetails}`);
+    }
+
     const backendResponse = await response.json();
     bodyJSON.messages.push(backendResponse);
 
