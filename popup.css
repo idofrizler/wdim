@@ -27,6 +27,26 @@ p {
     font-weight: bold;
 }
 
+#scrollable-section {
+    display: block; /* or display: inline-block; */
+    max-height: 340px;
+    overflow-y: auto;
+}
+
+/*
+#bottom-container {
+}
+*/
+#bottom-container {
+    display: flex;  /* Turns on flexbox for the container */
+    position: fixed;
+    bottom: 20px;
+    width: 700px;
+    justify-content: space-between;  /* Distributes items evenly: first item is flush with the start, last is flush with the end */
+    align-items: center;  /* Vertically aligns the items in the middle */
+    gap: 10px;  /* Optional: adds space between flex items, supported in newer browsers */
+}
+
 #summarize-button {
     margin-top: 16px;
     padding: 10px;
@@ -35,6 +55,7 @@ p {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    flex-shrink: 0;  /* Prevents the button from shrinking */
 }
 
 #summarize-button:hover {
@@ -42,14 +63,15 @@ p {
 }
 
 #details-input {
-    display: none;
+    /*display: none;*/
     margin-top: 16px;
-    padding: 10px;
+    padding: 8px;
     border: 2px solid #000;
     border-radius: 4px;
-    font-size: 16px;
+    font-size: 14px;
     width: 100%;
     box-sizing: border-box;
+    flex-grow: 1;  /* Allows the input to grow and take up remaining space */
 }
 
 #details-input:focus {
@@ -57,18 +79,16 @@ p {
     border-color: #1182b7;
 }
 
-#messages {
-    display: block; /* or display: inline-block; */
-    max-height: 280px;
-    overflow-y: auto;
+#details-input[disabled] {
+    background-color: #f3f3f3; /* Light grey background */
+    color: #a7a7a7; /* Grey text */
+    cursor: not-allowed; /* Show a 'not allowed' cursor */
 }
 
-#summary-paragraphs {
-    overflow: auto;
+hr {
+    border: none; /* Removes the default border */
+    height: 1px;  /* Defines the thickness of the hr */
+    background-color: #a7a7a7; /* Color of the hr */
+    margin: 18px 0; /* Space above and below the hr */
 }
 
-#bottom-container {
-    position: fixed;
-    bottom: 28px;
-    width: 668px; /* body width - body padding */
-}

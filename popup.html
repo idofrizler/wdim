@@ -8,14 +8,22 @@
 <body>
     <h1>What Did I Miss?</h1>
     <p>Conversation: <span id="group-name"></span></p>
-    <div id="summary-paragraphs" style="display: none;">
+    <div id="summary-container">
         <p id="summarize-text">Summarizing <span id="messageCount"></span> most recent messages...</p>
-        <p id="summarize-text-date" style="display: none;">Reading messages up to <span id="timePassedString"></span></p>
-        <p><span id="messages"></span></p>
+        <p id="summarize-text-date">Reading messages up to <span id="timePassedString"></span></p>
+        <div id="scrollable-section">
+            <div id="summary-section">
+                <p><span id="original-summary"></span></p>
+            </div>
+            <div id="follow-up-section">
+                <!-- Follow-up answers will be dynamically added here -->
+            </div>
+            <div id="error-message"></div>
+        </div>
     </div>
     <div id="bottom-container">
-        <button id="summarize-button">Summarize Messages</button>
-        <input type="text" id="details-input" placeholder="Ask a follow-up question..." style="display: none;">
+        <button id="summarize-button">Summarize Thread</button>
+        <input type="text" id="details-input" placeholder="Ask a follow-up question...">
     </div>
     <script src="popup.js"></script>
 </body>

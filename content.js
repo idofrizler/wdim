@@ -68,7 +68,7 @@ chrome.runtime.onMessage.addListener(
                     chrome.runtime.sendMessage({ type: "server_error", dom: error.message });
                     return;
                 }
-                chrome.runtime.sendMessage({ type: "messages", dom: { messageSummary: messageSummary } });
+                chrome.runtime.sendMessage({ type: "follow_up", dom: { messageSummary: messageSummary } });
                 break;
             default:
                 console.log("Invalid message type");

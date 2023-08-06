@@ -4,8 +4,46 @@ document.addEventListener('DOMContentLoaded', function() {
             tabs[0].id,
             {message: "get_group_name"}
         );
+        setVisibilityState(1);
     });
 });
+
+function setVisibilityState(state) {
+    // First, we hide all elements by default
+    let elements = [
+        'summarize-text',
+        'summarize-text-date',
+        'scrollable-section',
+        'summarize-button',
+        'details-input'
+    ];
+    elements.forEach(el => {
+        document.getElementById(el).style.display = 'none';
+    });
+    document.getElementById('details-input').disabled = false;
+
+    // Then, based on the state, we show the appropriate elements
+    switch(state) {
+        case 1:
+            document.getElementById('summarize-button').style.display = 'block';
+            break;
+        case 2:
+            document.getElementById('summarize-text').style.display = 'block';
+            document.getElementById('scrollable-section').style.display = 'block';
+            break;
+        case 3:
+            document.getElementById('summarize-text-date').style.display = 'block';
+            document.getElementById('scrollable-section').style.display = 'block';
+            document.getElementById('details-input').style.display = 'block';
+            break;
+        case 4:
+            document.getElementById('summarize-text').style.display = 'block';
+            document.getElementById('scrollable-section').style.display = 'block';
+            document.getElementById('details-input').style.display = 'block';
+            document.getElementById('details-input').disabled = true;
+            break;
+    }
+}
 
 function restoreMessagesFromStorage(currentGroupName) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -22,13 +60,16 @@ function restoreMessagesFromStorage(currentGroupName) {
                     );
                 });
             } else {
+                setVisibilityState(3);
+
                 console.log('Group name not changed, loading messages from storage');
                 // Else, if there is saved messages content, load it into the #messages div
                 if (result.messagesContent) {
-                    document.getElementById('messages').innerHTML = result.messagesContent;
-                    document.getElementById('summary-paragraphs').style.display = 'block';
+                    document.getElementById('original-summary').innerHTML = result.messagesContent;
+                    //document.getElementById('summary-paragraphs').style.display = 'block';
                 }
             }
+            
             saveGroupName(currentGroupName);
         });
     });
@@ -53,20 +94,23 @@ chrome.runtime.onMessage.addListener(
                     if (request.dom.messageCount > 0) {
                         document.getElementById('messageCount').textContent = request.dom.messageCount;
                         // make summarize-text-date visible
-                        document.getElementById('summarize-text-date').style.display = 'block';
+                        //document.getElementById('summarize-text-date').style.display = 'block';
                         document.getElementById('timePassedString').textContent = request.dom.timePassedString;
                     }
-                    document.getElementById('messages').innerHTML = request.dom.messageSummary;
+                    document.getElementById('original-summary').innerHTML = request.dom.messageSummary;
 
                     chrome.storage.local.set({messagesContent: request.dom.messageSummary}, function() {
                         console.log('Messages content saved');
                     });
 
-                    // make details-input visible
-                    document.getElementById('details-input').style.display = 'block';
+                    setVisibilityState(3);
+                    break;
+                case 'follow_up':
+                    addFollowupElement(request.dom.messageSummary);
+                    setVisibilityState(3);
                     break;
                 case 'server_error':
-                    document.getElementById('messages').innerHTML = request.dom;
+                    document.getElementById('error-message').innerHTML = request.dom;
                     break;
                 default:
                     console.error("Invalid request type");
@@ -80,6 +124,7 @@ chrome.runtime.onMessage.addListener(
 // when summarize-button is clicked, send a message to content.js to get the messages
 document.getElementById('summarize-button').addEventListener('click', function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        setVisibilityState(2);
         chrome.tabs.sendMessage(
             tabs[0].id,
             {message: "reset_gpt_context"}
@@ -89,21 +134,38 @@ document.getElementById('summarize-button').addEventListener('click', function()
             {message: "get_messages"}
         );
     });
-    document.getElementById('summarize-button').style.display = 'none';
-    // show the summary paragraphs
-    document.getElementById('summary-paragraphs').style.display = 'block';
 });
+
+function addFollowupElement(followUpText) {
+    var separator = document.createElement('hr');
+    var followUpP = document.createElement('p');
+    var followUpSpan = document.createElement('span');
+    followUpSpan.className = 'follow-up';
+    followUpSpan.innerHTML = followUpText;
+    followUpP.appendChild(followUpSpan);                   
+
+    document.getElementById('follow-up-section').appendChild(separator);
+    document.getElementById('follow-up-section').appendChild(followUpP);  
+
+    // scroll scrollable-section to the bottom
+    var scrollableSection = document.getElementById('scrollable-section');
+    scrollableSection.scrollTop = scrollableSection.scrollHeight;
+}
 
 // when details-input is changed and Enter is pressed, send a message to content.js to get the details
 document.getElementById('details-input').addEventListener('keyup', function(event) {
     if (event.key === 'Enter') {
         event.preventDefault();
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            setVisibilityState(4);
+
+            const followUpText = "<b>Follow-up: </b>" + document.getElementById('details-input').value;
+            addFollowupElement(followUpText);
+
             chrome.tabs.sendMessage(
                 tabs[0].id,
-                {message: "get_details", followupQuery: document.getElementById('details-input').value}
+                {message: "get_details", followupQuery: followUpText}
             );
         });
-        document.getElementById('details-input').style.display = 'none';
     }
 });

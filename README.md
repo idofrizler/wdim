@@ -20,6 +20,10 @@ To use this project as a browser extension, follow these steps:
 * UX revamp
 * Rearchitect to use State machine of views (also change server error message display)
 * Follow-up text appended to summary
+* Regenerate button
 * Buy me a coffee
 * Premium version: longer content 16k, no limits
 * Support more apps (Outlook? Gmail? Twitter?)
+
+## Bug fixes
+* Load follow-up, message count and date to the storage cache
