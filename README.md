@@ -15,14 +15,13 @@ To use this project as a browser extension, follow these steps:
 ## TODO
 
 * Add login
-* Identify images
+* Identify images, quotes and voice messages
 * Limit requests (per hour/day?)
 * UX revamp
-* Rearchitect to use State machine of views (also change server error message display)
-* Follow-up text appended to summary
+* Change server error message display
 * Regenerate button
 * Buy me a coffee
-* Premium version: longer content 16k, no limits
+* Premium version: longer content 16k, no limits, GPT-4
 * Support more apps (Outlook? Gmail? Twitter?)
 
 ## Bug fixes
