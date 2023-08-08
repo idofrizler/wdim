@@ -26,3 +26,4 @@ To use this project as a browser extension, follow these steps:
 
 ## Bug fixes
 * Load follow-up, message count and date to the storage cache
+* Block logic if not logged in, not just the view

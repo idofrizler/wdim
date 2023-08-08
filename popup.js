@@ -24,10 +24,23 @@ function sendGroupNameMessageToBackend() {
         if (currentTab) {
             var matchesPatterns = getMatchesPatterns();
             if (isUrlRelevant(currentTab.url, matchesPatterns)) {
-                chrome.tabs.sendMessage(
-                    currentTab.id,
-                    {message: "get_group_name"}
-                );
+                if (currentTab.status === "complete") {
+                    chrome.tabs.sendMessage(
+                        currentTab.id,
+                        {message: "get_group_name"}
+                    );
+                } else {
+                    console.log('Tab not loaded yet. Waiting for load event');
+                    chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
+                        if (tabId === currentTab.id && info.status === "complete") {
+                            chrome.tabs.sendMessage(
+                                currentTab.id,
+                                {message: "get_group_name"}
+                            );
+                            chrome.tabs.onUpdated.removeListener(listener);
+                        }
+                    });
+                }
             } else {
                 console.log('Not a relevant URL');
             }
@@ -148,13 +161,15 @@ function restoreMessagesFromStorage(currentGroupName) {
                     );
                 });
             } else {
-                setVisibilityState(3);
-
-                console.log('Group name not changed, loading messages from storage');
-                // Else, if there is saved messages content, load it into the #messages div
                 if (result.messagesContent) {
-                    document.getElementById('original-summary').innerHTML = result.messagesContent;
-                    //document.getElementById('summary-paragraphs').style.display = 'block';
+                    setVisibilityState(3);
+
+                    console.log('Group name not changed, loading messages from storage');
+                    // Else, if there is saved messages content, load it into the #messages div
+                    if (result.messagesContent) {
+                        document.getElementById('original-summary').innerHTML = result.messagesContent;
+                        //document.getElementById('summary-paragraphs').style.display = 'block';
+                    }
                 }
             }
             
