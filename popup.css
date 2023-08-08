@@ -92,3 +92,87 @@ hr {
     margin: 18px 0; /* Space above and below the hr */
 }
 
+#login-section {
+    background-color: #2c2c2c;
+    border: 2px solid #3c3c3c;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: 0.3s;
+}
+
+#login-section:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+#login-title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #1182b7;
+    text-align: center;
+}
+
+#login-google {
+    display: inline-block;
+    padding: 12px 20px;
+    background-color: #4285F4; /* Google's blue color */
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+#login-google:hover {
+    background-color: #357ABD; /* A darker blue for hover state */
+}
+
+/* ... */
+
+/* stick user-section to the top right corner of the window */
+#user-section {
+    position: fixed;
+    top: 0px;
+    right: 18px;
+    margin: 4px;
+    padding: 4px;
+    display: flex;
+    flex-direction: row; /* Change this from column to row */
+    justify-content: center;
+    align-items: center;
+}
+
+/* ... */
+
+#user-section p {
+    margin-right: 4px; /* If needed, adjust the margin */
+}
+
+#logout-google {
+    text-decoration: none; /* Remove underline */
+    color: #1182b7; /* Use a gentle color, like a soft blue */
+    transition: color 0.3s;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-left: 10px;
+}
+
+#logout-google:hover {
+    color: #005b8e; /* A slightly darker blue for hover state */
+}
+
+/* Optional: To remove the default appearance of the button in focus state, especially after clicking */
+#logout-google:focus {
+    outline: none;
+}

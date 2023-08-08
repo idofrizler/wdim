@@ -1,12 +1,90 @@
 document.addEventListener('DOMContentLoaded', function() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(
-            tabs[0].id,
-            {message: "get_group_name"}
-        );
-        setVisibilityState(1);
+    chrome.storage.local.get('user', function(data) {
+        const user = data.user;
+
+        if (user) {
+            console.log('User info found in storage:', user);
+            bootstrapAfterLogin(user);
+        } else {
+            console.log('User not logged in');
+            setVisibilityState(0);
+        }
     });
 });
+
+function bootstrapAfterLogin(user) {
+    document.getElementById('user-name').innerHTML = user.given_name;
+    sendGroupNameMessageToBackend();
+    setVisibilityState(1);
+}
+
+function sendGroupNameMessageToBackend() {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        var currentTab = tabs[0];
+        if (currentTab) {
+            var matchesPatterns = getMatchesPatterns();
+            if (isUrlRelevant(currentTab.url, matchesPatterns)) {
+                chrome.tabs.sendMessage(
+                    currentTab.id,
+                    {message: "get_group_name"}
+                );
+            } else {
+                console.log('Not a relevant URL');
+            }
+        }
+    });
+}
+
+document.getElementById('login-google').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ action: 'login' }, function(response) {
+        if (response.error) {
+            console.error(JSON.stringify(response.error, null, 2));
+        } else {
+            //console.log('Token:', response.token);
+            console.log('User info: ', response.user);
+            bootstrapAfterLogin(response.user);
+            // Use the token as needed, or make API requests to fetch user data.
+        }
+    });
+});
+
+function getMatchesPatterns() {
+    var manifest = chrome.runtime.getManifest();
+    var contentScripts = manifest.content_scripts || [];
+    var allMatches = [];
+
+    contentScripts.forEach(function(contentScript) {
+        if (contentScript.matches) {
+            allMatches = allMatches.concat(contentScript.matches);
+        }
+    });
+
+    return allMatches;
+}
+
+function isUrlRelevant(url, patterns) {
+    return patterns.some(pattern => {
+        // Convert the manifest pattern to a regular expression.
+        // This simple approach might not cover all cases but works for most common patterns.
+        var regexPattern = pattern.replace('*://', 'https://|http://').replace('*', '.*');
+        var regex = new RegExp(regexPattern);
+        return regex.test(url);
+    });
+}
+
+document.getElementById('logout-google').addEventListener('click', () => {
+    chrome.storage.local.remove('user', function() {
+        //window.close();
+        console.log('Logged out. User info removed from storage');
+        setVisibilityState(0);
+    });
+});
+
+function toggleElementsVisibility(elements, display) {
+    elements.forEach(el => {
+        document.getElementById(el).style.display = display;
+    });
+}
 
 function setVisibilityState(state) {
     // First, we hide all elements by default
@@ -15,32 +93,42 @@ function setVisibilityState(state) {
         'summarize-text-date',
         'scrollable-section',
         'summarize-button',
-        'details-input'
+        'details-input',
+        'login-section',
+        'main-section'
     ];
-    elements.forEach(el => {
-        document.getElementById(el).style.display = 'none';
-    });
+
+    toggleElementsVisibility(elements, 'none');
     document.getElementById('details-input').disabled = false;
 
-    // Then, based on the state, we show the appropriate elements
+    // if state = 0, show only login-section; else, show main-section
+    if (state === 0) {
+        toggleElementsVisibility(['login-section'], 'block');
+    } else {
+        toggleElementsVisibility(['main-section'], 'block');
+    }
+
+    console.log('Setting visibility state to ' + state);
+
+    // Then, based on the state, we show the appropriate elements inside of main section
     switch(state) {
+        case 0:
+            break;
         case 1:
-            document.getElementById('summarize-button').style.display = 'block';
+            toggleElementsVisibility(['summarize-button'], 'block');
             break;
         case 2:
-            document.getElementById('summarize-text').style.display = 'block';
-            document.getElementById('scrollable-section').style.display = 'block';
+            toggleElementsVisibility(['summarize-text', 'scrollable-section'], 'block');
             break;
         case 3:
-            document.getElementById('summarize-text-date').style.display = 'block';
-            document.getElementById('scrollable-section').style.display = 'block';
-            document.getElementById('details-input').style.display = 'block';
+            toggleElementsVisibility(['summarize-text-date', 'scrollable-section', 'details-input'], 'block');
             break;
         case 4:
-            document.getElementById('summarize-text').style.display = 'block';
-            document.getElementById('scrollable-section').style.display = 'block';
-            document.getElementById('details-input').style.display = 'block';
+            toggleElementsVisibility(['summarize-text', 'scrollable-section', 'details-input'], 'block');
             document.getElementById('details-input').disabled = true;
+            break;
+        default:
+            console.log('Invalid state');
             break;
     }
 }
@@ -50,10 +138,10 @@ function restoreMessagesFromStorage(currentGroupName) {
         chrome.storage.local.get(['savedGroupName', 'messagesContent'], function(result) {
             // If there is a saved group name and it's different from the current group name
             if (result.savedGroupName !== currentGroupName) {
-                // Clear the storage
-                console.log('Group name changed, clearing storage');
-                chrome.storage.local.clear(function() {
-                    console.log('Storage cleared due to group name change');
+                // Remove the keys from storage
+                console.log('Group name changed, removing keys from storage');
+                chrome.storage.local.remove(['savedGroupName', 'messagesContent'], function() {
+                    console.log('Keys removed from storage due to group name change');
                     chrome.tabs.sendMessage(
                         tabs[0].id,
                         {message: "reset_gpt_context"}
