@@ -13,17 +13,13 @@ To use this project as a browser extension, follow these steps:
 5. The extension should now be installed and ready to use.
 
 ## TODO
-
+* Info page with: version, about, contact, buy me a coffee
 * Identify images, quotes, polls, emojis and voice messages
-* UX revamp
-* Regenerate button
-* Buy me a coffee
 * Premium version: longer content 16k, no limits, GPT-4
+* Settings page with: Choose summary language, Upgrade to Premium
+* UX revamp
 * Support more apps (Outlook? Gmail? Twitter?)
-* Other languages support for the bot
 
 ## Bug fixes
-* Load follow-up, message count and date to the storage cache
 * Block extension logic if not logged in, not just the view
 * Graceful exit if not on WhatsApp Web page
-* center the login section

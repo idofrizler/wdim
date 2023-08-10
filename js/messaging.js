@@ -69,6 +69,9 @@ chrome.runtime.onMessage.addListener(
                     break;
                 case 'server_error':
                     document.getElementById('error-message').innerHTML = request.dom;
+                    // scroll scrollable-section to the bottom
+                    var scrollableSection = document.getElementById('scrollable-section');
+                    scrollableSection.scrollTop = scrollableSection.scrollHeight;
                     break;
                 default:
                     console.error("Invalid request type");

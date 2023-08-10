@@ -23,20 +23,25 @@ document.getElementById('logout-google').addEventListener('click', () => {
     });
 });
 
+function handleButtonClick() {
+    return function () {
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            setVisibilityState(2);
+            chrome.tabs.sendMessage(
+                tabs[0].id,
+                { message: "reset_gpt_context" }
+            );
+            chrome.tabs.sendMessage(
+                tabs[0].id,
+                { message: "get_messages" }
+            );
+        });
+    };
+}
+
 // when summarize-button is clicked, send a message to content.js to get the messages
-document.getElementById('summarize-button').addEventListener('click', function() {
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        setVisibilityState(2);
-        chrome.tabs.sendMessage(
-            tabs[0].id,
-            {message: "reset_gpt_context"}
-        );
-        chrome.tabs.sendMessage(
-            tabs[0].id,
-            {message: "get_messages"}
-        );
-    });
-});
+document.getElementById('summarize-button').addEventListener('click', handleButtonClick());
+document.getElementById('regenerate-button').addEventListener('click', handleButtonClick());
 
 // when details-input is changed and Enter is pressed, send a message to content.js to get the details
 document.getElementById('details-input').addEventListener('keyup', function(event) {

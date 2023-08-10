@@ -34,6 +34,7 @@ export function setVisibilityState(state) {
         'scrollable-section',
         'summarize-button',
         'details-input',
+        'regenerate-button',
         'login-section',
         'main-section'
     ];
@@ -61,10 +62,10 @@ export function setVisibilityState(state) {
             toggleElementsVisibility(['summarize-text', 'scrollable-section'], 'block');
             break;
         case 3:
-            toggleElementsVisibility(['summarize-text-date', 'scrollable-section', 'details-input'], 'block');
+            toggleElementsVisibility(['summarize-text-date', 'scrollable-section', 'details-input', 'regenerate-button'], 'block');
             break;
         case 4:
-            toggleElementsVisibility(['summarize-text', 'scrollable-section', 'details-input'], 'block');
+            toggleElementsVisibility(['summarize-text', 'scrollable-section', 'details-input', 'regenerate-button'], 'block');
             document.getElementById('details-input').disabled = true;
             break;
         default:

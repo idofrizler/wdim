@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>What Did I Miss?</title>
     <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 </head>
 <body>
     <h1>What Did I Miss?</h1>
@@ -29,12 +30,15 @@
                 <div id="follow-up-section">
                     <!-- Follow-up answers will be dynamically added here -->
                 </div>
-                <div id="error-message"></div>
+                <div id="error-section">
+                    <p><span id="error-message"></span></p>
+                </div>
             </div>
         </div>
         <div id="bottom-container">
             <button id="summarize-button">Summarize Thread</button>
             <input type="text" id="details-input" placeholder="Ask a follow-up question...">
+            <button id="regenerate-button"><i class="fa-solid fa-arrows-rotate"></i> Regenerate</button>
         </div>
     </div>
     <script src="js/util.js" type="module"></script>

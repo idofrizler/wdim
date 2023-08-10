@@ -59,6 +59,10 @@ p {
     padding: 18px 0; /* Space above and below the hr */
 }
 
+#error-message {
+    color: red
+}
+
 #bottom-container {
     display: flex;  /* Turns on flexbox for the container */
     position: fixed;
@@ -69,8 +73,8 @@ p {
     gap: 10px;  /* Optional: adds space between flex items, supported in newer browsers */
 }
 
-#summarize-button {
-    margin-top: 16px;
+button {
+    margin-top: 0px;
     margin-bottom: 6px;
     padding: 10px;
     background-color: #004675;
@@ -81,7 +85,7 @@ p {
     flex-shrink: 0;  /* Prevents the button from shrinking */
 }
 
-#summarize-button:hover {
+button:hover {
     background-color: #1182b7;
 }
 
