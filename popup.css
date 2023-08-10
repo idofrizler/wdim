@@ -89,6 +89,22 @@ button:hover {
     background-color: #1182b7;
 }
 
+#info-button, #settings-button {
+    cursor: pointer;
+    color: white; /* Adjust the color as needed */
+    background: none; /* Ensure there's no background */
+    border: none; /* Ensure there's no border */
+    padding: 0;
+    padding-left: 12px;
+}
+
+#info-button:hover, #settings-button:hover {
+    cursor: pointer;
+    color: #1182b7; /* Adjust the color as needed */
+    background: none; /* Ensure there's no background */
+    border: none; /* Ensure there's no border */
+}
+
 #details-input {
     /*display: none;*/
     padding-top: 16px;
@@ -209,6 +225,10 @@ hr {
     outline: none;
 }
 
-.small-font {
+#user-section .small-font {
     font-size: 12px;
+    text-align: left;
+    width: 100%;
+    margin: 0;  /* Reset margin */
+    padding: 0; /* Reset padding */
 }
