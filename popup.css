@@ -16,7 +16,14 @@ h1 {
 
 p {
     font-size: 16px;
-    margin-bottom: 10px;
+    padding-bottom: 10px;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+/* except for the p under div user-section */
+#user-section p {
+    padding-bottom: 2px;
 }
 
 #url {
@@ -31,17 +38,32 @@ p {
     display: block; /* or display: inline-block; */
     max-height: 340px;
     overflow-y: auto;
+    background-color: #2c2c2c;  /* Added this line to make the background lighter */
 }
 
-/*
-#bottom-container {
+#scrollable-section p {
+    padding: 12px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    margin-top: 0;  /* Added this line to remove default margin */
+    margin-bottom: 0;  /* Added this line to remove default margin */
 }
-*/
+
+#scrollable-section hr {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.user-message {
+    background-color: #3c3c3c; /* This is a brighter yellowish shade. Adjust to your liking */
+    padding: 18px 0; /* Space above and below the hr */
+}
+
 #bottom-container {
     display: flex;  /* Turns on flexbox for the container */
     position: fixed;
     bottom: 20px;
-    width: 700px;
+    width: 702px;
     justify-content: space-between;  /* Distributes items evenly: first item is flush with the start, last is flush with the end */
     align-items: center;  /* Vertically aligns the items in the middle */
     gap: 10px;  /* Optional: adds space between flex items, supported in newer browsers */
@@ -65,7 +87,8 @@ p {
 
 #details-input {
     /*display: none;*/
-    margin-top: 16px;
+    padding-top: 16px;
+    margin-bottom: 6px;
     padding: 8px;
     border: 2px solid #000;
     border-radius: 4px;
@@ -90,7 +113,6 @@ hr {
     border: none; /* Removes the default border */
     height: 1px;  /* Defines the thickness of the hr */
     background-color: #a7a7a7; /* Color of the hr */
-    margin: 18px 0; /* Space above and below the hr */
 }
 
 #login-section {
@@ -145,8 +167,8 @@ hr {
 /* stick user-section to the top right corner of the window */
 #user-section {
     position: fixed;
-    top: 0px;
-    right: 18px;
+    top: 8px;
+    right: 12px;
     margin: 4px;
     padding: 4px;
     display: flex;

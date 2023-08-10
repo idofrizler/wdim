@@ -14,10 +14,8 @@ To use this project as a browser extension, follow these steps:
 
 ## TODO
 
-* Identify images, quotes, polls and voice messages
-* Limit requests (per hour/day?)
+* Identify images, quotes, polls, emojis and voice messages
 * UX revamp
-* Change server error message display
 * Regenerate button
 * Buy me a coffee
 * Premium version: longer content 16k, no limits, GPT-4
