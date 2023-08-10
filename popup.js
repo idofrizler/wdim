@@ -14,6 +14,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function bootstrapAfterLogin(user) {
     document.getElementById('user-name').innerHTML = user.given_name;
+    chrome.storage.local.get(['remainingQuota'], function(data) {
+        if (data.remainingQuota) {
+            document.getElementById('quota-message').innerHTML = data.remainingQuota;
+        }
+    });
+        
     sendGroupNameMessageToBackend();
     setVisibilityState(1);
 }
@@ -146,14 +152,20 @@ function setVisibilityState(state) {
     }
 }
 
+const storageKeys = ['groupName', 'messagesContent', 'timePassedString', 'messagesCount', 'followUpElements'];
+
 function restoreMessagesFromStorage(currentGroupName) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.storage.local.get(['savedGroupName', 'messagesContent'], function(result) {
+        chrome.storage.local.get(storageKeys, function(result) {
+            if (!result.groupName) {
+                return;
+            }
+
             // If there is a saved group name and it's different from the current group name
-            if (result.savedGroupName !== currentGroupName) {
+            if (result.groupName !== currentGroupName) {
                 // Remove the keys from storage
                 console.log('Group name changed, removing keys from storage');
-                chrome.storage.local.remove(['savedGroupName', 'messagesContent'], function() {
+                chrome.storage.local.remove(storageKeys, function() {
                     console.log('Keys removed from storage due to group name change');
                     chrome.tabs.sendMessage(
                         tabs[0].id,
@@ -161,29 +173,38 @@ function restoreMessagesFromStorage(currentGroupName) {
                     );
                 });
             } else {
-                if (result.messagesContent) {
-                    setVisibilityState(3);
-
-                    console.log('Group name not changed, loading messages from storage');
-                    // Else, if there is saved messages content, load it into the #messages div
-                    if (result.messagesContent) {
-                        document.getElementById('original-summary').innerHTML = result.messagesContent;
-                        //document.getElementById('summary-paragraphs').style.display = 'block';
-                    }
+                console.log('Group name not changed, loading messages from storage if those exist');
+                if (!result.messagesContent) {
+                    return;
                 }
+                
+                // conversation summary exists in storage (not just group name), load it
+                document.getElementById('original-summary').innerHTML = result.messagesContent;
+                document.getElementById('messageCount').innerHTML = result.messagesCount;
+                document.getElementById('timePassedString').innerHTML = result.timePassedString;
+
+                if (result.followUpElements) {
+                    restoreFollowupMessagesFromStorage(result.followUpElements);
+                }
+
+                setVisibilityState(3);
             }
-            
-            saveGroupName(currentGroupName);
         });
     });
 }
 
-// save group name to storage
-function saveGroupName(groupName) {
-    chrome.storage.local.set({savedGroupName: groupName}, function() {
-        console.log('Group name saved: ' + groupName);
+function restoreFollowupMessagesFromStorage(followUpElements) {
+    followUpElements.forEach(followUpElement => {
+        addFollowupElementToDOM(followUpElement);
     });
 }
+
+// // save group name to storage
+// function saveGroupName(groupName) {
+//     chrome.storage.local.set({savedGroupName: groupName}, function() {
+//         console.log('Group name saved: ' + groupName);
+//     });
+// }
 
 chrome.runtime.onMessage.addListener(
     function(request) {
@@ -194,23 +215,32 @@ chrome.runtime.onMessage.addListener(
                     restoreMessagesFromStorage(request.dom);
                     break;
                 case 'messages':
+                    document.getElementById('group-name').textContent = request.dom.groupName;
                     if (request.dom.messageCount > 0) {
                         document.getElementById('messageCount').textContent = request.dom.messageCount;
-                        // make summarize-text-date visible
-                        //document.getElementById('summarize-text-date').style.display = 'block';
                         document.getElementById('timePassedString').textContent = request.dom.timePassedString;
                     }
                     document.getElementById('original-summary').innerHTML = request.dom.messageSummary;
 
-                    chrome.storage.local.set({messagesContent: request.dom.messageSummary}, function() {
+                    chrome.storage.local.set({
+                        groupName: request.dom.groupName,
+                        messagesContent: request.dom.messageSummary,
+                        messagesCount: request.dom.messageCount,
+                        timePassedString: request.dom.timePassedString
+                    }, function() {
                         console.log('Messages content saved');
                     });
 
                     setVisibilityState(3);
                     break;
                 case 'follow_up':
-                    addFollowupElement(request.dom.messageSummary);
+                    addFollowupElementToDOM(request.dom.messageSummary);
+                    saveFollowupElementToStorage(request.dom.messageSummary);
                     setVisibilityState(3);
+                    break;
+                case 'quota_info':
+                    console.log('Updating quota info');
+                    document.getElementById('quota-message').textContent = request.dom.remainingQuota;
                     break;
                 case 'server_error':
                     document.getElementById('error-message').innerHTML = request.dom;
@@ -239,7 +269,17 @@ document.getElementById('summarize-button').addEventListener('click', function()
     });
 });
 
-function addFollowupElement(followUpText) {
+function saveFollowupElementToStorage(followUpText) {
+    chrome.storage.local.get('followUpElements', function(result) {
+        var followUpElements = result.followUpElements || [];
+        followUpElements.push(followUpText);
+        chrome.storage.local.set({followUpElements: followUpElements}, function() {
+            console.log('Follow-up element saved');
+        });
+    });
+}
+
+function addFollowupElementToDOM(followUpText) {
     var separator = document.createElement('hr');
     var followUpP = document.createElement('p');
     var followUpSpan = document.createElement('span');
@@ -263,7 +303,8 @@ document.getElementById('details-input').addEventListener('keyup', function(even
             setVisibilityState(4);
 
             const followUpText = "<b>Follow-up: </b>" + document.getElementById('details-input').value;
-            addFollowupElement(followUpText);
+            addFollowupElementToDOM(followUpText);
+            saveFollowupElementToStorage(followUpText);
 
             chrome.tabs.sendMessage(
                 tabs[0].id,

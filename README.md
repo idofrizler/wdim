@@ -14,8 +14,7 @@ To use this project as a browser extension, follow these steps:
 
 ## TODO
 
-* Add login
-* Identify images, quotes and voice messages
+* Identify images, quotes, polls and voice messages
 * Limit requests (per hour/day?)
 * UX revamp
 * Change server error message display
@@ -23,7 +22,10 @@ To use this project as a browser extension, follow these steps:
 * Buy me a coffee
 * Premium version: longer content 16k, no limits, GPT-4
 * Support more apps (Outlook? Gmail? Twitter?)
+* Other languages support for the bot
 
 ## Bug fixes
 * Load follow-up, message count and date to the storage cache
-* Block logic if not logged in, not just the view
+* Block extension logic if not logged in, not just the view
+* Graceful exit if not on WhatsApp Web page
+* center the login section
