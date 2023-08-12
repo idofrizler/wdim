@@ -61,3 +61,44 @@ document.getElementById('details-input').addEventListener('keyup', function(even
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Get references to buttons and popups
+    const infoButton = document.getElementById('info-button');
+    const settingsButton = document.getElementById('settings-button');
+    const infoPopup = document.getElementById('info-popup');
+    const settingsPopup = document.getElementById('settings-popup');
+
+    // Toggle the info popup when the info button is clicked
+    infoButton.addEventListener('click', function() {
+        togglePopup(infoPopup);
+    });
+
+    // Toggle the settings popup when the settings button is clicked
+    settingsButton.addEventListener('click', function() {
+        togglePopup(settingsPopup);
+    });
+
+    // Add a global click event listener to close the popup when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!infoPopup.contains(event.target) && !infoButton.contains(event.target)) {
+            closePopup(infoPopup);
+        }
+
+        if (!settingsPopup.contains(event.target) && !settingsButton.contains(event.target)) {
+            closePopup(settingsPopup);
+        }
+    });
+});
+
+function togglePopup(popup) {
+    if (popup.style.display === 'block') {
+        popup.style.display = 'none';
+    } else {
+        popup.style.display = 'block';
+    }
+}
+
+function closePopup(popup) {
+    popup.style.display = 'none';
+}
