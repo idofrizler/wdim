@@ -13,13 +13,16 @@ To use this project as a browser extension, follow these steps:
 5. The extension should now be installed and ready to use.
 
 ## TODO
-* Info page with: version, about, contact, buy me a coffee
-* Identify images, quotes, polls, emojis and voice messages
-* Premium version: longer content 16k, no limits, GPT-4
-* Settings page with: Choose summary language, Upgrade to Premium
+* Info page with: version (read from manifest), about, contact, buy me a coffee
+* Identify images, videos, quotes, polls, emojis and voice messages
+* Settings page with: Choose summary language
+* Open only to invited users
+
 * UX revamp
 * Support more apps (Outlook? Gmail? Twitter?)
+* Premium version: longer content 16k, no limits, GPT-4
 
 ## Bug fixes
 * Block extension logic if not logged in, not just the view
+* Verify the Google token in the backend to prevent masquerading
 * Graceful exit if not on WhatsApp Web page

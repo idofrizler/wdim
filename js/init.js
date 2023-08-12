@@ -17,8 +17,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 export function bootstrapAfterLogin(user) {
     document.getElementById('user-name').innerHTML = user.given_name;
-    chrome.storage.local.get(['remainingQuota'], function(data) {
-        if (data.remainingQuota) {
+    chrome.storage.local.get(['remainingQuota', 'quotaDate'], function(data) {
+        // get current date in UTC
+        const currentDate = new Date();
+        const currentDateString = currentDate.toISOString().split('T')[0];
+
+        if (data.remainingQuota && data.quotaDate&& data.quotaDate === currentDateString) {
             document.getElementById('quota-message').innerHTML = data.remainingQuota;
         }
     });

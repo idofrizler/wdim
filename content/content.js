@@ -147,7 +147,12 @@ async function getSummaryFromBackend(bodyJSON) {
     // Extract the remaining quota
     const remainingQuota = backendResponse.remainingQuota;
 
-    chrome.storage.local.set({remainingQuota: remainingQuota}, function() {
+    // get current date in UTC
+    const currentDate = new Date();
+    const currentDateString = currentDate.toISOString().split('T')[0];
+
+    chrome.storage.local.set({
+        remainingQuota: remainingQuota, quotaDate: currentDateString}, function() {
         console.log('Remaining quota saved to storage.');
     });
 

@@ -7,14 +7,14 @@
         "extension_pages": "script-src 'self'; object-src 'self';"
     },
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "background/background.js"
     },
     "oauth2": {
         "client_id": "941303876227-gh6j2ddi77tql5n0hr12dum9v8b40had.apps.googleusercontent.com",
         "scopes": ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"]
     },
     "action": {
-        "default_popup": "popup.html",
+        "default_popup": "html/popup.html",
         "default_icon": {
             "16": "images/icon16.png",
             "48": "images/icon48.png",
@@ -29,7 +29,7 @@
     "content_scripts": [
         {
             "matches": ["*://web.whatsapp.com/*"],
-            "js": ["parser.js", "content.js"]
+            "js": ["content/parser.js", "content/content.js"]
         }
     ]
 }
