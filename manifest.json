@@ -31,5 +31,6 @@
             "matches": ["*://web.whatsapp.com/*"],
             "js": ["content/parser.js", "content/content.js"]
         }
-    ]
+    ],
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArb397Zm0DJWDltm6QXY2BQM525DIc/jf5geUhcesHBH3+lbO4an9i7S4dO3ep50wHyw7iQGehmKIAZlwzS+6fLZumiiFAnLtIYZWUsnvPxazJbKiprAkEkmy1A6s0LlwvSlbFfzGh5P+4JgBzk2wZWU1D475cQj3e2M3gjCWsW3Zc17GksVAdDfN2u/Szejk35IDae+N11TAIManAQ9HusSoy/4kFJe+BFihwQOQsfexvljNmPiQAVvWQHHzNonJvBkZ6CuCkGChzlU7kSGBF9aaHoapXJdwVvmMAgjromEaUk6WooM/TDIZrvZGUUZieBQChn9BWY2C4cJ5g5urBQIDAQAB"
 }

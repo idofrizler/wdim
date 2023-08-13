@@ -1,5 +1,5 @@
 const CLIENT_ID = '941303876227-gh6j2ddi77tql5n0hr12dum9v8b40had.apps.googleusercontent.com';
-const EXTENSION_ID = 'hjjdhiieinahibbpiebappehjhpalapc';
+const EXTENSION_ID = 'iglmbhepoiigniimpiljkfalgpcbjhjh';
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'login') {
