@@ -21,8 +21,22 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
                     const hasLink = span.getAttribute('data-testid') === 'link-preview-title' ? true : false;
                     if (hasLink) {
                         messageText += prePlainText.slice(0, -2) + " shared a link: " + span.textContent + "<br>";
-                    } else {             
-                        messageText += prePlainText + span.textContent + "<br>";
+                    } else {
+                        // get span of class quoted-mention inside message
+                        const quotedDiv = copyableText.querySelector('div[data-testid="quoted-message"]');
+                        if (quotedDiv) {
+                            const authorSpan = quotedDiv.querySelector('span[data-testid="author"]');
+                            const quotedSpan = quotedDiv.querySelector('span.quoted-mention');
+                            const quotedMentionText = quotedSpan.textContent;
+                            const authorText = authorSpan.textContent;
+
+                            const replySpan = copyableText.querySelector('span.selectable-text.copyable-text');
+                            const replyText = replySpan.textContent;
+
+                            messageText += prePlainText.slice(0, -2) + " replied \"" + replyText + "\" to " + authorText + "'s message \"" + quotedMentionText + "\"<br>";
+                        } else {
+                            messageText += prePlainText + span.textContent + "<br>";
+                        }
                     }
                 } else {
                     console.log(`Error: span not found at index ${msgIndex}`);
@@ -31,7 +45,19 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
         } else { // Image message
             const imageThumb = message.querySelector('div[data-testid="image-thumb"]');
             if (imageThumb) {
-                // TODO: implement
+                const author = message.querySelector('span[data-testid="author"]');
+                const timeStr = message.querySelector('div[data-testid="msg-meta"]').querySelector('span').textContent;
+                if (author) {
+                    const authorButton = message.querySelector('span[testid="author"]');
+                    if (authorButton) {
+                        const ariaLabel = author.getAttribute('aria-label');
+                        messageText += "[" + timeStr + "] " + authorButton.textContent + " (" + ariaLabel + ")" + " shared a photo<br>";
+                    } else {
+                        // get text content from author
+                        const authorText = author.textContent;
+                        messageText += "[" + timeStr + "] " + authorText + " shared a photo<br>";
+                    }
+                }
             } else {
                 console.log(`Error: message type not idenfitied at index ${msgIndex}`);        
             }
