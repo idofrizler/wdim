@@ -69,6 +69,7 @@ chrome.runtime.onMessage.addListener(
                     break;
                 case 'server_error':
                     document.getElementById('error-message').innerHTML = request.dom;
+                    document.getElementById('error-section').style.display = 'block';
                     // scroll scrollable-section to the bottom
                     var scrollableSection = document.getElementById('scrollable-section');
                     scrollableSection.scrollTop = scrollableSection.scrollHeight;
