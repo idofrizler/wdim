@@ -1,5 +1,5 @@
 import { setVisibilityState } from './util.js';
-import { addFollowupElementToDOM, saveFollowupElementToStorage } from './storageHandlers.js';
+import { addFollowupElementToDOM, saveFollowupElementToStorage, resetStorageKeys } from './storageHandlers.js';
 import { bootstrapAfterLogin } from './init.js';
 
 document.getElementById('login-google').addEventListener('click', () => {
@@ -17,7 +17,6 @@ document.getElementById('login-google').addEventListener('click', () => {
 
 document.getElementById('logout-google').addEventListener('click', () => {
     chrome.storage.local.remove('user', function() {
-        //window.close();
         console.log('Logged out. User info removed from storage');
         setVisibilityState(0);
     });
@@ -27,10 +26,17 @@ function handleButtonClick() {
     return function () {
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             setVisibilityState(2);
-            chrome.tabs.sendMessage(
-                tabs[0].id,
-                { message: "reset_gpt_context" }
-            );
+            resetStorageKeys(['messagesContent', 'timePassedString', 'messagesCount', 'followUpElements']);
+            
+            // empty the content of the original summary element
+            document.getElementById('original-summary').innerHTML = "";
+
+            // remove all elements in the follow-up section
+            const followUpSection = document.getElementById('follow-up-section');
+            while (followUpSection.firstChild) {
+                followUpSection.removeChild(followUpSection.firstChild);
+            }
+
             chrome.tabs.sendMessage(
                 tabs[0].id,
                 { message: "get_messages" }

@@ -1,9 +1,8 @@
 import { setVisibilityState } from './util.js';
 
-function resetStorage() {
-    const storageKeys = ['groupName', 'messagesContent', 'timePassedString', 'messagesCount', 'followUpElements'];
+export function resetStorageKeys(storageKeys) {
     chrome.storage.local.remove(storageKeys, function() {
-        console.log('Keys removed from storage');
+        console.log(`Keys removed from storage: ${storageKeys}`);
     });
 }
 
@@ -20,11 +19,7 @@ export function restoreMessagesFromStorage(currentGroupName) {
             if (result.groupName !== currentGroupName) {
                 // Remove the keys from storage
                 console.log('Group name changed, removing keys from storage');
-                resetStorage();
-                chrome.tabs.sendMessage(
-                    tabs[0].id,
-                    {message: "reset_gpt_context"}
-                );
+                resetStorageKeys(storageKeys);
             } else {
                 console.log('Group name not changed, loading messages from storage if those exist');
                 if (!result.messagesContent) {

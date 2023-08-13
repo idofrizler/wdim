@@ -48,10 +48,6 @@ chrome.runtime.onMessage.addListener(
         let messageSummary;
 
         switch(request.message) {
-            case "reset_gpt_context":
-                // cut the bodyJSON.message array and keep only the first element in it
-                bodyJSON.gptBody.messages = bodyJSON.gptBody.messages.slice(0, 1);
-                break;
             case "get_group_name":
                 if (groupName) {
                     chrome.runtime.sendMessage({ type: "group_name", dom: groupName });
@@ -68,6 +64,8 @@ chrome.runtime.onMessage.addListener(
 
                 let messagesJson = parseHTMLRows(messagesDiv);
                 if (messagesJson.messageCount > 0) {
+                    // resetting bodyJSON to system context
+                    bodyJSON.gptBody.messages = bodyJSON.gptBody.messages.slice(0, 1);
                     bodyJSON.gptBody.messages.push({
                         "role": "user",
                         "content": `${messagesJson.messageText}`

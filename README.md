@@ -25,4 +25,3 @@ To use this project as a browser extension, follow these steps:
 * Block extension logic if not logged in, not just the view
 * Verify the Google token in the backend to prevent masquerading
 * Graceful exit if not on WhatsApp Web page
-* When pressing Regenerate, remove follow-ups and other fields from storage
