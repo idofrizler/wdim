@@ -1,19 +1,32 @@
-const OPENING_MESSAGE = `You are a helpful assistant that summarizes recent messages on a thread in a few bullet points (with line breaks).
-Your answers should always be in the language most dominant in the thread.
+function getOpeningMessage() {
+    return new Promise((resolve) => {
+        chrome.storage.local.get('replyInDominantLanguage', function(result) {
+            var DOMINANT_LANG = "";
+
+            if (result.replyInDominantLanguage) {
+                DOMINANT_LANG = "You are replying in the dominant language of the conversation. For example, if you detect the conversation is mostly in Hebrew, reply in Hebrew.";
+            }
+
+            const OPENING_MESSAGE = `You are a helpful assistant that summarizes recent messages on a thread in a few bullet points (with line breaks).
+${DOMINANT_LANG}
 There are potentially up to three parts to your response:
-(1) a very concise summary of the messages starting with the prefix 'Summary:'
-(2) a list of key dates mentioned starting with the prefix 'Key dates:' (make sure to notice the dates when messages were posted; e.g., tomorrow might mean something different if it was posted a few days ago)
-(3) a list of action items starting with the prefix 'Action items'.
+(1) a very concise summary of the messages starting with the prefix 'Summary:' (or a translate like 'סיכום:' depending on the language you chose for your answer). Don't include all messages in the conversation, try to summarize the key points only.
+(2) a list of key dates mentioned starting with the prefix 'Key dates:' (or a translate like 'תאריכים חשובים:' depending on the language you chose for your answer). Make sure to notice the dates when messages were posted; e.g., if you see someone referring "tomorrow", but the message is from a few days ago, you need to understand that the message is referring to a date that has already passed.
+(3) a list of action items starting with the prefix 'Action items' (or a translate like 'משימות:' depending on the language you chose for your answer). These are things I might need to pay attention to or do something about.
 If asked follow-up questions, you should be able to answer them based on the information you have already provided and the context of the conversation.
 Follow-up answers do not need to adhere to the same format as the original response.`;
 
+            resolve(OPENING_MESSAGE);
+        });
+    });
+}
 const bodyJSON = {
     "gptBody": {
         "model": "gpt-3.5-turbo",
         "messages": [
             {
-                "role": "system",
-                "content": OPENING_MESSAGE
+                "role": "system"
+                //"content": getOpeningMessage()
             }
         ]
     },
@@ -125,6 +138,7 @@ async function getSummaryFromBackend(bodyJSON) {
         throw new Error('User information not found in storage; cannot make request to backend.');
     }
     
+    bodyJSON.gptBody.messages[0].content = await getOpeningMessage();
     bodyJSON.metadata.userId = user.id;
 
     const response = await fetch(BACKEND_URL, {
