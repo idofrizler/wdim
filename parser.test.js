@@ -24,7 +24,16 @@ describe("Text messages on group chats", () => {
     expect(result.messageCount).toBe(1);  
   });
 
-  // test: sender is unknown contact. Return phone number + maybe name
+    it("Message from an unknown sender (extract Maybe?)", () => {
+      const dom = new JSDOM(``);
+      const rowElements = dom.window.document.querySelectorAll('div[role="row"]');
+
+      const result = parseHTMLRows(rowElements);
+      expect(result).toHaveProperty("messageCount");
+      expect(result).toHaveProperty("messageText");
+      expect(result.messageText).toBe('[12:37, 02/08/2023] Avri Pinto: נראה שהיא כן לגיטימית<br>');
+      expect(result.messageCount).toBe(1);  
+    });
 });
 
 describe("Links shared on group chats", () => {

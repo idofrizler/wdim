@@ -33,15 +33,21 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
                             const authorText = authorSpan ? authorSpan.textContent + "'s" : "your";
 
                             const replySpan = copyableText.querySelector('span.selectable-text.copyable-text');
-                            const replyText = replySpan.textContent;
+                            const replyImage = copyableText.querySelector('img.selectable-text.copyable-text');
 
+                            // if replySpan, get its textContent; else get replyImage alt
+                            const replyText = replySpan ? replySpan.textContent : replyImage.alt;
                             messageText += prePlainText.slice(0, -2) + " replied \"" + replyText + "\" to " + authorText + " message \"" + quotedMentionText + "\"<br>";    
                         } else {
                             messageText += prePlainText + span.textContent + "<br>";
                         }
                     }
                 } else {
-                    console.log(`Error: span not found at index ${msgIndex}`);
+                    const systemSpan = message.querySelector('span[data-testid="system_message"]'); // system message
+                    const subtypeModify = message.querySelector('div[data-testid="subtype-modify"]');
+                    if (!systemSpan && !subtypeModify) {
+                        console.log(`Error: span not found at index ${msgIndex}`);
+                    }
                 }
             }
         } else { // Image message
