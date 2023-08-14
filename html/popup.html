@@ -33,17 +33,39 @@
     </div>
     <div id="settings-popup" class="popup">
         <div class="popup-content">
-            <!-- paragraph detailing the extension and its purpose -->
-            <!-- add an About title -->
             <h2>Settings</h2>
-            <!-- Toggle on/off for option for assistant to reply in most dominant language detected from thread -->
-            <div class="settings-option">
-                <p>Assistant replies in the conversation's most dominant language</p>
-                <label class="switch">
-                    <input type="checkbox" id="language-toggle">
-                    <span class="slider round"></span>
-                </label>
-            </div>            
+            <div id="settings-pane">
+                <div class="settings-option">
+                    <div class="settings-text">
+                        <p>Dominant language</p>
+                        <p class="setting-description">This option enables the assistant to reply in the language that is most dominant in the conversation.</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="language-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="settings-option">
+                    <div class="settings-text">
+                        <p>System prompt</p>
+                        <p class="setting-description">Choose from a variety of different system prompts, depending on your preference</p>
+                    </div>
+                    <div id="prompt-dropdown-elem" class="custom-dropdown">
+                        <button id="prompt-dropdown-btn">Select assistant</button>
+                        <div id="prompt-options" class="dropdown-options">
+                            <div class="dropdown-option">
+                                <p class="option-title">Woody (default)</p>
+                                <p class="option-description">Woody is our base assistant. His job is to summarize your conversation in the most productive way possible</p>
+                            </div>
+                            <div class="dropdown-option">
+                                <p class="option-title">Pirate Ray</p>
+                                <p class="option-description">This will summarize your converstaion like a pirate. Arrr!</p>
+                            </div>
+                            <!-- Add more options as needed -->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     <div id="main-section">

@@ -119,3 +119,20 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.storage.local.set({ replyInDominantLanguage: replyInDominantLanguage });
     });
 });
+
+const promprtDropdownButton = document.getElementById("prompt-dropdown-btn");
+const promptOptions = document.getElementById("prompt-options");
+
+promprtDropdownButton.addEventListener("click", () => {
+    promptOptions.style.display = promptOptions.style.display === "block" ? "none" : "block";
+});
+
+const optionElements = document.querySelectorAll(".dropdown-option");
+optionElements.forEach((option) => {
+    option.addEventListener("click", (event) => {
+        const selectedTitle = option.querySelector(".option-title").textContent;
+        promprtDropdownButton.textContent = selectedTitle;
+        promptOptions.style.display = "none";
+    });
+});
+

@@ -301,7 +301,7 @@ hr {
 
 .settings-option p {
     flex-grow: 1;
-    margin-right: 16px;
+    /* margin-right: 16px; */
 }
 
 .switch {
@@ -310,6 +310,7 @@ hr {
     width: 40px;
     height: 20px;
     margin-bottom: 10px;
+    margin-left: auto; /* Push the switch to the right */
 }
 
 .switch input {
@@ -348,4 +349,101 @@ hr {
     transform: translateX(20px);
 }
 
-/* Adjust sizes and colors as needed */
+.settings-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.settings-text {
+    flex-grow: 1; /* Take up remaining space */
+    max-width: 80%; /* Set a maximum width of 70% of the available space */
+}
+
+.settings-option p {
+    padding-bottom: 0px;
+}
+
+.setting-description {
+    font-size: 12px;
+    margin-top: 4px;
+    color: #a7a7a7;
+}
+
+#settings-pane {
+    padding: 8px;
+}
+
+#settings-text {
+    width: 0.7em;
+}
+
+.custom-dropdown {
+    position: relative;
+    display: inline-block;
+    margin-left: auto; /* Push the dropdown to the right */
+}
+
+#prompt-dropdown-btn {
+    padding: 8px;
+    font-size: 14px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    background-color: #ddd;
+    color: #444;
+    cursor: pointer;
+    font-weight: bold;
+
+}
+
+.dropdown-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 300px; /* Adjust width as needed */
+    max-height: 300px; /* Limit the maximum height */
+    overflow-y: auto;
+    background-color: #ddd;
+    border: 2px solid #000;
+    border-top: none;
+    border-radius: 0 0 4px 4px;
+    display: none;
+    z-index: 999;
+    padding: 0;
+    margin: 0;
+}
+
+.dropdown-option {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+
+.option-title {
+    font-weight: bold;
+    font-size: 14px;
+    margin: 2px;
+}
+
+.option-description {
+    font-size: 12px;
+    margin: 2px;
+    color: #777777;
+}
+
+.dropdown-options {
+    /* ... Other properties ... */
+    left: auto; /* Align the dropdown to the right of the button */
+    right: 0;
+}
+
+.dropdown-option {
+    /* ... Other properties ... */
+    color: #444; /* Adjust the text color */
+    transition: background-color 0.2s; /* Add a transition for hover effect */
+}
+
+.dropdown-option:hover {
+    background-color: #bbb; /* Change background color on hover */
+    cursor: pointer;
+}
