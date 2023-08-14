@@ -293,6 +293,10 @@ hr {
     text-align: center; /* Aligns the content horizontally in the center */
 }
 
+#info-pane {
+    padding: 8px;
+}
+
 .settings-option {
     display: flex;
     align-items: center;

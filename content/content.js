@@ -1,25 +1,3 @@
-function getOpeningMessage() {
-    return new Promise((resolve) => {
-        chrome.storage.local.get('replyInDominantLanguage', function(result) {
-            var DOMINANT_LANG = "";
-
-            if (result.replyInDominantLanguage) {
-                DOMINANT_LANG = "You are replying in the dominant language of the conversation. For example, if you detect the conversation is mostly in Hebrew, reply in Hebrew.";
-            }
-
-            const OPENING_MESSAGE = `You are a helpful assistant that summarizes recent messages on a thread in a few bullet points (with line breaks).
-${DOMINANT_LANG}
-There are potentially up to three parts to your response:
-(1) a very concise summary of the messages starting with the prefix 'Summary:' (or a translate like 'סיכום:' depending on the language you chose for your answer). Don't include all messages in the conversation, try to summarize the key points only.
-(2) a list of key dates mentioned starting with the prefix 'Key dates:' (or a translate like 'תאריכים חשובים:' depending on the language you chose for your answer). Make sure to notice the dates when messages were posted; e.g., if you see someone referring "tomorrow", but the message is from a few days ago, you need to understand that the message is referring to a date that has already passed.
-(3) a list of action items starting with the prefix 'Action items' (or a translate like 'משימות:' depending on the language you chose for your answer). These are things I might need to pay attention to or do something about.
-If asked follow-up questions, you should be able to answer them based on the information you have already provided and the context of the conversation.
-Follow-up answers do not need to adhere to the same format as the original response.`;
-
-            resolve(OPENING_MESSAGE);
-        });
-    });
-}
 const bodyJSON = {
     "gptBody": {
         "model": "gpt-3.5-turbo",
@@ -125,6 +103,25 @@ function getUserInfo() {
     });
 }
 
+function getAssistant() {
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get('assistant', function(data) {
+            // switch case for different assistants, based on assistantMap. If not found, choose Woody()
+            if (chrome.runtime.lastError) {
+                console.error('Failed to get assistant from storage:', chrome.runtime.lastError);
+                reject(chrome.runtime.lastError);
+            }
+            else {
+                const assistant = data.assistant ? data.assistant : "default";
+                if (assistantMap[assistant]) {
+                    resolve(assistantMap[assistant]);
+                } else {
+                    reject("Assistant not found in assistantMap");
+                }
+            }
+        });
+    });
+}
 
 const BACKEND_URL = "https://wdim.azurewebsites.net/api/getSummary";
 
@@ -137,7 +134,8 @@ async function getSummaryFromBackend(bodyJSON) {
         throw new Error('User information not found in storage; cannot make request to backend.');
     }
     
-    bodyJSON.gptBody.messages[0].content = await getOpeningMessage();
+    let assistantInstance = await getAssistant();
+    bodyJSON.gptBody.messages[0].content = assistantInstance.getSystemPrompt();
     bodyJSON.metadata.userId = user.id;
 
     const response = await fetch(BACKEND_URL, {
