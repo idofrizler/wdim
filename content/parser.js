@@ -27,18 +27,15 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
                         if (quotedDiv) {
                             const authorSpan = quotedDiv.querySelector('span[data-testid="author"]');
                             const quotedSpan = quotedDiv.querySelector('span.quoted-mention');
-                            if (!authorSpan || !quotedSpan) {
-                                // TODO: fix this!
-                                console.log(`Error: authorSpan or quotedSpan not found at index ${msgIndex}`);
-                            } else {
-                                const quotedMentionText = quotedSpan.textContent;
-                                const authorText = authorSpan.textContent;
-    
-                                const replySpan = copyableText.querySelector('span.selectable-text.copyable-text');
-                                const replyText = replySpan.textContent;
-    
-                                messageText += prePlainText.slice(0, -2) + " replied \"" + replyText + "\" to " + authorText + "'s message \"" + quotedMentionText + "\"<br>";    
-                            }
+                            const quotedMentionText = quotedSpan.textContent;
+
+                            // if authorSpan, get its textContent; else, simply write "Your"
+                            const authorText = authorSpan ? authorSpan.textContent + "'s" : "your";
+
+                            const replySpan = copyableText.querySelector('span.selectable-text.copyable-text');
+                            const replyText = replySpan.textContent;
+
+                            messageText += prePlainText.slice(0, -2) + " replied \"" + replyText + "\" to " + authorText + " message \"" + quotedMentionText + "\"<br>";    
                         } else {
                             messageText += prePlainText + span.textContent + "<br>";
                         }

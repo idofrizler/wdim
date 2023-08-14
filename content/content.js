@@ -56,7 +56,8 @@ chrome.runtime.onMessage.addListener(
                 }
                 break;
             case "get_messages":
-                const messagesDiv = document.querySelectorAll('div[role="row"]');
+                const conversationPanel = document.querySelector('div[data-testid="conversation-panel-messages"]');
+                const messagesDiv = conversationPanel.querySelectorAll('div[role="row"]');
                 if (!groupName || !messagesDiv) {
                     chrome.runtime.sendMessage({ type: "messages", dom: "not found" });
                     break;
