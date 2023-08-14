@@ -105,14 +105,14 @@ function getUserInfo() {
 
 function getAssistant() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get('assistant', function(data) {
+        chrome.storage.local.get('assistantValue', function(data) {
             // switch case for different assistants, based on assistantMap. If not found, choose Woody()
             if (chrome.runtime.lastError) {
                 console.error('Failed to get assistant from storage:', chrome.runtime.lastError);
                 reject(chrome.runtime.lastError);
             }
             else {
-                const assistant = data.assistant ? data.assistant : "default";
+                const assistant = data.assistantValue ? data.assistantValue : "default";
                 if (assistantMap[assistant]) {
                     resolve(assistantMap[assistant]);
                 } else {

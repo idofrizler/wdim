@@ -120,19 +120,35 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-const promprtDropdownButton = document.getElementById("prompt-dropdown-btn");
-const promptOptions = document.getElementById("prompt-options");
+document.addEventListener('DOMContentLoaded', function() {
+    const promprtDropdownButton = document.getElementById("prompt-dropdown-btn");
+    const promptOptions = document.getElementById("prompt-options");
 
-promprtDropdownButton.addEventListener("click", () => {
-    promptOptions.style.display = promptOptions.style.display === "block" ? "none" : "block";
-});
+    chrome.storage.local.get(["assistantName", "assistantValue"], function(data) {
+        if (data.assistantName && data.assistantValue) {
+            // Use the values as required
+            const assistantName = data.assistantName;
+            const assistantValue = data.assistantValue;
+            console.log(`Selected assistant: ${assistantName} (${assistantValue})`);
 
-const optionElements = document.querySelectorAll(".dropdown-option");
-optionElements.forEach((option) => {
-    option.addEventListener("click", (event) => {
-        const selectedTitle = option.querySelector(".option-title").textContent;
-        promprtDropdownButton.textContent = selectedTitle;
-        promptOptions.style.display = "none";
+            promprtDropdownButton.textContent = data.assistantName;
+        }
+    });    
+
+    promprtDropdownButton.addEventListener("click", () => {
+        promptOptions.style.display = promptOptions.style.display === "block" ? "none" : "block";
     });
-});
 
+    const optionElements = document.querySelectorAll(".dropdown-option");
+    optionElements.forEach((option) => {
+        option.addEventListener("click", (event) => {
+            const selectedTitle = option.querySelector(".option-title").textContent;
+            const selectedAssistant = option.getAttribute("data-assistant"); // Get the assistant value from data-attribute
+    
+            promprtDropdownButton.textContent = selectedTitle;
+            promptOptions.style.display = "none";
+    
+            chrome.storage.local.set({ assistantName: selectedTitle, assistantValue: selectedAssistant }); // Store both the assistant name and value in local storage
+        });
+    });    
+});

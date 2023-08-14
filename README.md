@@ -2,6 +2,10 @@
 
 This project aims to improve the user experience of the website by adding new features and fixing existing issues.
 
+![Summary](image.png)
+![About page](image-1.png)
+![Settings page](image-2.png)
+
 # Usage
 
 To use this project as a browser extension, follow these steps:
