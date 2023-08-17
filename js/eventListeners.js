@@ -152,3 +152,57 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });    
 });
+
+const apiKeyLink = document.getElementById('api-key-link');
+const apiKeyPopup = document.getElementById('api-key-popup');
+const apiKeyInput = document.getElementById('api-key-input');
+const apiKeySaveButton = document.getElementById('api-key-save');
+const apiKeyDeleteButton = document.getElementById('api-key-delete');
+
+// Load existing key and update link text if needed
+chrome.storage.local.get('userApiKey', function(data) {
+    if (data.userApiKey) {
+        apiKeyLink.textContent = 'Change Key';
+        apiKeyInput.value = data.userApiKey;
+    }
+});
+
+// Toggle popup visibility when link is clicked
+apiKeyLink.addEventListener('click', function(e) {
+    e.preventDefault();
+    apiKeyPopup.classList.toggle('hidden');
+});
+
+// Save the key when "Save" is clicked
+apiKeySaveButton.addEventListener('click', function() {
+    const enteredApiKey = apiKeyInput.value.trim();
+
+    if (enteredApiKey) {
+        chrome.storage.local.set({ userApiKey: enteredApiKey }, function() {
+            apiKeyLink.textContent = 'Change Key';
+            apiKeyPopup.classList.add('hidden');
+        });
+    } else {
+        alert('Please enter a valid API Key.');
+    }
+});
+
+// Delete the key when "Delete" is clicked
+apiKeyDeleteButton.addEventListener('click', function() {
+    chrome.storage.local.remove('userApiKey', function() {
+        apiKeyLink.textContent = 'Add Key';
+        apiKeyInput.value = '';
+        apiKeyPopup.classList.add('hidden');
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    const closeButton = document.querySelector('.popup-close-btn');
+    
+    if (closeButton) {
+        closeButton.addEventListener('click', function() {
+            // Assuming 'hidden' class hides the popup
+            document.getElementById('api-key-popup').classList.add('hidden');
+        });
+    }
+});

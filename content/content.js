@@ -21,19 +21,19 @@ function getGroupNameFromDocument() {
 }
 
 function createFullFirstPrompt(messageText, groupName) {
-    
-    const INSTRUCTION_PREFIX = `Please summarize the following WhatsApp conversation from a conversation named "${groupName}".`;
-    const DOMINANT_LANG_INST = "You should figure out the dominant language of the conversation, and write your summary in that language. Do not automatically respond in English; first, figure out the conversation's language and make sure to respond in the same language. For example, if you detect the conversation is mostly in Hebrew, reply in Hebrew.\n";
-    let dominantLang = "";
+    return new Promise((resolve, reject) => {
+        const INSTRUCTION_PREFIX = `Please summarize the following WhatsApp conversation from a conversation named "${groupName}".`;
+        const DOMINANT_LANG_INST = "You should figure out the dominant language of the conversation and write it down for yourself; then, write your summary in that language. Do not automatically respond in English; first, figure out the conversation's language and make sure to respond in the same language. For example, if you detect the conversation is mostly in Hebrew, reply in Hebrew.\n";
+        let dominantLang = "";
 
-    chrome.storage.local.get('replyInDominantLanguage', function(data) {
-        const replyInDominantLanguage = data.replyInDominantLanguage;
-        if (replyInDominantLanguage) {
-            dominantLang = DOMINANT_LANG_INST;
-        }
+        chrome.storage.local.get('replyInDominantLanguage', function(data) {
+            const replyInDominantLanguage = data.replyInDominantLanguage;
+            if (replyInDominantLanguage) {
+                dominantLang = DOMINANT_LANG_INST;
+            }
+            resolve(`${INSTRUCTION_PREFIX}\n${dominantLang}\n${messageText}`);
+        });
     });
-
-    return `${INSTRUCTION_PREFIX}\n${dominantLang}\n${messageText}`;
 }
 
 chrome.runtime.onMessage.addListener(
@@ -58,7 +58,7 @@ chrome.runtime.onMessage.addListener(
                 }
 
                 let messagesJson = parseHTMLRows(messagesDiv);
-                let firstPrompt = createFullFirstPrompt(messagesJson.messageText, groupName);
+                let firstPrompt = await createFullFirstPrompt(messagesJson.messageText, groupName);
 
                 if (messagesJson.messageCount > 0) {
                     // resetting bodyJSON to system context
@@ -68,7 +68,7 @@ chrome.runtime.onMessage.addListener(
                         "content": `${firstPrompt}`
                     });
                     try {
-                        messageSummary = await getSummaryFromBackend(bodyJSON);
+                        messageSummary = await callApiSource(bodyJSON);
                     } catch (error) {
                         console.error(error);
                         chrome.runtime.sendMessage({ type: "server_error", dom: error.message });
@@ -93,7 +93,7 @@ chrome.runtime.onMessage.addListener(
                     "content": `${followupQuery}`
                 });
                 try {
-                    messageSummary = await getSummaryFromBackend(bodyJSON);
+                    messageSummary = await callApiSource(bodyJSON);
                 } catch (error) {
                     console.error(error);
                     chrome.runtime.sendMessage({ type: "server_error", dom: error.message });
@@ -139,57 +139,4 @@ function getAssistant() {
             }
         });
     });
-}
-
-const BACKEND_URL = "https://wdim.azurewebsites.net/api/getSummary";
-
-async function getSummaryFromBackend(bodyJSON) {
-    // Fetch user information
-    let user = await getUserInfo();
-
-    // Add the userId to the metadata of bodyJSON
-    if (!user || !user.id) {
-        throw new Error('User information not found in storage; cannot make request to backend.');
-    }
-    
-    let assistantInstance = await getAssistant();
-    bodyJSON.gptBody.messages[0].content = assistantInstance.getSystemPrompt();
-    bodyJSON.metadata.userId = user.id;
-
-    const response = await fetch(BACKEND_URL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(bodyJSON),
-    });
-
-    // Handle non-OK responses
-    if (!response.ok) {
-        const errorDetails = await response.text();
-        throw new Error(`Backend returned an error: ${response.status} ${response.statusText}. Details: ${errorDetails}`);
-    }
-
-    const backendResponse = await response.json();
-    bodyJSON.gptBody.messages.push(backendResponse.message);
-
-    // Extract the remaining quota
-    const remainingQuota = backendResponse.remainingQuota;
-
-    // get current date in UTC
-    const currentDate = new Date();
-    const currentDateString = currentDate.toISOString().split('T')[0];
-
-    chrome.storage.local.set({
-        remainingQuota: remainingQuota, quotaDate: currentDateString}, function() {
-        console.log('Remaining quota saved to storage.');
-    });
-
-    chrome.runtime.sendMessage({ 
-        type: "quota_info", 
-        dom: { remainingQuota: remainingQuota }
-    });
-
-    const messageText = backendResponse.message.content.trim();
-    return messageText.replace(/\n/g, "<br>");
 }

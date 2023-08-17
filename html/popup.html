@@ -53,7 +53,8 @@
                         <p class="setting-description">Choose from a variety of different system prompts, depending on your preference</p>
                     </div>
                     <div id="prompt-dropdown-elem" class="custom-dropdown">
-                        <button id="prompt-dropdown-btn">Select assistant</button>
+                        <!-- <button id="prompt-dropdown-btn">Select assistant</button> -->
+                        <a href="#" id="prompt-dropdown-btn">Select assistant</a>
                         <div id="prompt-options" class="dropdown-options">
                             <div class="dropdown-option" data-assistant="woody">
                                 <p class="option-title">Woody (default)</p>
@@ -71,6 +72,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="settings-option">
+                    <div class="settings-text">
+                        <p>User-provided API Key</p>
+                        <p class="setting-description">This will make the extension work directly with GPT API not sharing any data with anyone else. Notice: this means you are paying the API costs.</p>
+                    </div>
+                    <a href="#" id="api-key-link">Add Key</a> <!-- This is the link -->
+                    <div id="api-key-popup" class="hidden">
+                        <button class="popup-close-btn">×</button>
+                        <input type="text" id="api-key-input" placeholder="Enter your API Key here...">
+                        <button id="api-key-save">Save</button>
+                        <button id="api-key-delete">Delete</button>
+                    </div>                    
+                </div>                 
             </div>
         </div>
     </div>

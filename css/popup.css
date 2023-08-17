@@ -376,6 +376,7 @@ hr {
 
 #settings-pane {
     padding: 8px;
+    position: relative;
 }
 
 #settings-text {
@@ -388,7 +389,7 @@ hr {
     margin-left: auto; /* Push the dropdown to the right */
 }
 
-#prompt-dropdown-btn {
+/* #prompt-dropdown-btn {
     padding: 8px;
     font-size: 14px;
     border: 2px solid #000;
@@ -398,7 +399,7 @@ hr {
     cursor: pointer;
     font-weight: bold;
     margin-bottom: 2px;
-}
+} */
 
 .dropdown-options {
     position: absolute;
@@ -450,4 +451,84 @@ hr {
 .dropdown-option:hover {
     background-color: #bbb; /* Change background color on hover */
     cursor: pointer;
+}
+
+#api-key-popup {
+    position: absolute;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 1;
+}
+
+.hidden {
+    display: none;
+}
+
+.settings-option a {
+    margin-left: auto; /* Align the dropdown to the right of the button */
+    font-size: 15px;
+}
+
+#api-key-popup {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: 50%;  /* you can adjust this value to position the popup vertically within the parent container */
+    left: 50%; /* this will center the popup horizontally */
+    transform: translate(-50%, -50%); /* ensures it remains centered */
+    width: 80%; /* or any other width you want for the popup */
+    z-index: 10; /* this ensures that the popup will appear over other elements within the parent container */
+
+}
+
+.popup-close-btn {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #333;
+}
+
+#api-key-input {
+    width: calc(100% - 48px); /* Adjusting for padding */
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#api-key-save, #api-key-delete {
+    margin: 0 5px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    background-color: #f7f7f7;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    color: #333; /* text color */
+}
+
+#api-key-save:hover, #api-key-delete:hover {
+    background-color: #e0e0e0;
+}
+
+#api-key-popup button {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.popup-close-btn:focus {
+    outline: none;
+    box-shadow: 0 0 5px rgba(128, 128, 128, 0.5);
+}
+
+.popup-close-btn:hover {
+    border: none;
+    outline: none;
+    background-color: #f7f7f7;
 }
