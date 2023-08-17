@@ -43,7 +43,11 @@ chrome.runtime.onMessage.addListener(
                     document.getElementById('group-name').textContent = request.dom.groupName;
                     if (request.dom.messageCount > 0) {
                         document.getElementById('messageCount').textContent = request.dom.messageCount;
-                        document.getElementById('timePassedString').textContent = request.dom.timePassedString;
+                        if (request.dom.timePassedString) {
+                            document.getElementById('timePassedString').textContent = request.dom.timePassedString;
+                        } else {
+                            document.getElementById('summarize-text-date').style.display = 'none';
+                        }
                     }
                     document.getElementById('original-summary').innerHTML = request.dom.messageSummary;
 

@@ -29,7 +29,11 @@ export function restoreMessagesFromStorage(currentGroupName) {
                 // conversation summary exists in storage (not just group name), load it
                 document.getElementById('original-summary').innerHTML = result.messagesContent;
                 document.getElementById('messageCount').innerHTML = result.messagesCount;
-                document.getElementById('timePassedString').innerHTML = result.timePassedString;
+                if (!result.timePassedString) {
+                    document.getElementById('summarize-text-date').style.display = 'none';
+                } else {
+                    document.getElementById('timePassedString').innerHTML = result.timePassedString;
+                }
 
                 if (result.followUpElements) {
                     restoreFollowupMessagesFromStorage(result.followUpElements);

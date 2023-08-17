@@ -397,7 +397,7 @@ hr {
     color: #444;
     cursor: pointer;
     font-weight: bold;
-
+    margin-bottom: 2px;
 }
 
 .dropdown-options {

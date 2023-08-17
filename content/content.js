@@ -20,6 +20,22 @@ function getGroupNameFromDocument() {
     return null;
 }
 
+function createFullFirstPrompt(messageText, groupName) {
+    
+    const INSTRUCTION_PREFIX = `Please summarize the following WhatsApp conversation from a conversation named "${groupName}".`;
+    const DOMINANT_LANG_INST = "You should figure out the dominant language of the conversation, and write your summary in that language. Do not automatically respond in English; first, figure out the conversation's language and make sure to respond in the same language. For example, if you detect the conversation is mostly in Hebrew, reply in Hebrew.\n";
+    let dominantLang = "";
+
+    chrome.storage.local.get('replyInDominantLanguage', function(data) {
+        const replyInDominantLanguage = data.replyInDominantLanguage;
+        if (replyInDominantLanguage) {
+            dominantLang = DOMINANT_LANG_INST;
+        }
+    });
+
+    return `${INSTRUCTION_PREFIX}\n${dominantLang}\n${messageText}`;
+}
+
 chrome.runtime.onMessage.addListener(
     async function(request, sender) {
         const groupName = getGroupNameFromDocument();
@@ -42,12 +58,14 @@ chrome.runtime.onMessage.addListener(
                 }
 
                 let messagesJson = parseHTMLRows(messagesDiv);
+                let firstPrompt = createFullFirstPrompt(messagesJson.messageText, groupName);
+
                 if (messagesJson.messageCount > 0) {
                     // resetting bodyJSON to system context
                     bodyJSON.gptBody.messages = bodyJSON.gptBody.messages.slice(0, 1);
                     bodyJSON.gptBody.messages.push({
                         "role": "user",
-                        "content": `${messagesJson.messageText}`
+                        "content": `${firstPrompt}`
                     });
                     try {
                         messageSummary = await getSummaryFromBackend(bodyJSON);

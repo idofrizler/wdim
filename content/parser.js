@@ -89,6 +89,12 @@ function calcTimePassed(messageText) {
     // Extract the date using Regex from the first message, which looks like this: [22:46, 21/07/2023]
     const dateRegex = /\[(\d{2}):(\d{2}), (\d{2})\/(\d{2})\/(\d{4})\]/;
     const match = firstMessagePrefix.match(dateRegex);
+
+    // if no matches, return null
+    if (!match) {
+        return null;
+    }
+
     const date = `${match[5]}-${match[4]}-${match[3]}T${match[1]}:${match[2]}:00`;
 
     // Calculate the time passed since that date, in local time

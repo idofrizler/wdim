@@ -35,19 +35,3 @@ const assistantMap = {
     "pirate_ray": new PirateRay(),
     "default": new Woody()
 };
-
-
-
-// function getSystemPrompt() {
-//     return new Promise((resolve) => {
-//         chrome.storage.local.get('replyInDominantLanguage', function(result) {
-//             var DOMINANT_LANG = "";
-
-//             if (result.replyInDominantLanguage) {
-//                 DOMINANT_LANG = "You are replying in the dominant language of the conversation. For example, if you detect the conversation is mostly in Hebrew, reply in Hebrew.";
-//             }
-
-//             resolve(OPENING_MESSAGE);
-//         });
-//     });
-// }
