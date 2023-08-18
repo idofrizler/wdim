@@ -11,7 +11,7 @@ describe("Photos shared on group chats", () => {
       const result = parseHTMLRows(rowElements);
       expect(result).toHaveProperty("messageCount");
       expect(result).toHaveProperty("messageText");
-      expect(result.messageText).toBe('[14:40] +972 58-402-0420 (Maybe Veronica) shared a photo<br>');
+      expect(result.messageText).toBe('[14:40] +972 58-402-0420 (Maybe Veronica) shared a photo\n');
       expect(result.messageCount).toBe(1);  
     });
   
@@ -23,7 +23,7 @@ describe("Photos shared on group chats", () => {
       const result = parseHTMLRows(rowElements);
       expect(result).toHaveProperty("messageCount");
       expect(result).toHaveProperty("messageText");
-      expect(result.messageText).toBe('[10:55, 01/08/2023] Ido Frizler shared a photo with this caption: זו<br>');
+      expect(result.messageText).toBe('[10:55, 01/08/2023] Ido Frizler shared a photo with this caption: זו\n');
       expect(result.messageCount).toBe(1);  
     });
   
@@ -35,7 +35,7 @@ describe("Photos shared on group chats", () => {
       const result = parseHTMLRows(rowElements);
       expect(result).toHaveProperty("messageCount");
       expect(result).toHaveProperty("messageText");
-      expect(result.messageText).toBe('[14:16, 01/08/2023] Dekel Meidan shared X photos<br>');
+      expect(result.messageText).toBe('[14:16, 01/08/2023] Dekel Meidan shared X photos\n');
       expect(result.messageCount).toBe(1);  
     });
   
@@ -47,7 +47,7 @@ describe("Photos shared on group chats", () => {
         const result = parseHTMLRows(rowElements);
         expect(result).toHaveProperty("messageCount");
         expect(result).toHaveProperty("messageText");
-        expect(result.messageText).toBe('[01:08] Liat Hayun shared a photo<br>');
+        expect(result.messageText).toBe('[01:08] Liat Hayun shared a photo\n');
         expect(result.messageCount).toBe(1);  
       });
 
@@ -74,7 +74,7 @@ describe("Quoted messages", () => {
         const result = parseHTMLRows(rowElements);
         expect(result).toHaveProperty("messageCount");
         expect(result).toHaveProperty("messageText");
-        expect(result.messageText).toBe('[23:04, 12/08/2023] Ido Frizler replied "לא" to Alon Navon\'s message "להגיד על מישהו שיש לו מלא rizz?"<br>');
+        expect(result.messageText).toBe('[23:04, 12/08/2023] Ido Frizler replied "לא" to Alon Navon\'s message "להגיד על מישהו שיש לו מלא rizz?"\n');
         expect(result.messageCount).toBe(1);  
       });
 
@@ -86,7 +86,7 @@ describe("Quoted messages", () => {
         const result = parseHTMLRows(rowElements);
         expect(result).toHaveProperty("messageCount");
         expect(result).toHaveProperty("messageText");
-        expect(result.messageText).toBe('[22:28, 13/08/2023] Shimi Gersner replied "עשה את זה אז?" to your message "וואי תודה שאמרת לי. אני מתחיל לחשוב שהוא עושה לי שוב את הקטע הזה"<br>');
+        expect(result.messageText).toBe('[22:28, 13/08/2023] Shimi Gersner replied "עשה את זה אז?" to your message "וואי תודה שאמרת לי. אני מתחיל לחשוב שהוא עושה לי שוב את הקטע הזה"\n');
         expect(result.messageCount).toBe(1);  
     });
 
@@ -98,7 +98,7 @@ describe("Quoted messages", () => {
         const result = parseHTMLRows(rowElements);
         expect(result).toHaveProperty("messageCount");
         expect(result).toHaveProperty("messageText");
-        expect(result.messageText).toBe('[19:06, 03/08/2023] יעל אמא של רום (אלה) replied \"זה מה שחשבתי שזה.\" to Noa Benaroya\'s message \"ממקורות יודעי דבר, אין עדיין שיבוצים כולם רשומים פיקטיבית לא1"<br>');
+        expect(result.messageText).toBe('[19:06, 03/08/2023] יעל אמא של רום (אלה) replied \"זה מה שחשבתי שזה.\" to Noa Benaroya\'s message \"ממקורות יודעי דבר, אין עדיין שיבוצים כולם רשומים פיקטיבית לא1"\n');
         expect(result.messageCount).toBe(1);  
       });
 
@@ -113,7 +113,7 @@ describe("Quoted messages", () => {
         const result = parseHTMLRows(rowElements);
         expect(result).toHaveProperty("messageCount");
         expect(result).toHaveProperty("messageText");
-        expect(result.messageText).toBe('[23:04, 12/08/2023] Ido Frizler replied "לא" to Alon Navon\'s message "להגיד על מישהו שיש לו מלא rizz?"<br>');
+        expect(result.messageText).toBe('[23:04, 12/08/2023] Ido Frizler replied "לא" to Alon Navon\'s message "להגיד על מישהו שיש לו מלא rizz?"\n');
         expect(result.messageCount).toBe(1);  
       });
 
@@ -136,7 +136,7 @@ describe("Quoted messages", () => {
         const result = parseHTMLRows(rowElements);
         expect(result).toHaveProperty("messageCount");
         expect(result).toHaveProperty("messageText");
-        expect(result.messageText).toBe('[23:04, 12/08/2023] Ido Frizler replied "לא" to Alon Navon\'s message "להגיד על מישהו שיש לו מלא rizz?"<br>');
+        expect(result.messageText).toBe('[23:04, 12/08/2023] Ido Frizler replied "לא" to Alon Navon\'s message "להגיד על מישהו שיש לו מלא rizz?"\n');
         expect(result.messageCount).toBe(1);  
     });
       
@@ -148,7 +148,7 @@ describe("Quoted messages", () => {
         const result = parseHTMLRows(rowElements);
         expect(result).toHaveProperty("messageCount");
         expect(result).toHaveProperty("messageText");
-        expect(result.messageText).toBe('[23:04, 12/08/2023] Ido Frizler replied "לא" to Alon Navon\'s message "להגיד על מישהו שיש לו מלא rizz?"<br>');
+        expect(result.messageText).toBe('[23:04, 12/08/2023] Ido Frizler replied "לא" to Alon Navon\'s message "להגיד על מישהו שיש לו מלא rizz?"\n');
         expect(result.messageCount).toBe(1);  
       });
 });

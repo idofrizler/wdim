@@ -23,7 +23,7 @@ function getGroupNameFromDocument() {
 function createFullFirstPrompt(messageText, groupName) {
     return new Promise((resolve, reject) => {
         const INSTRUCTION_PREFIX = `Please summarize the following WhatsApp conversation from a conversation named "${groupName}".`;
-        const DOMINANT_LANG_INST = "You should figure out the dominant language of the conversation and write it down for yourself; then, write your summary in that language. Do not automatically respond in English; first, figure out the conversation's language and make sure to respond in the same language. For example, if you detect the conversation is mostly in Hebrew, reply in Hebrew.\n";
+        const DOMINANT_LANG_INST = "You should figure out the dominant language of the conversation and write it down for yourself; then, write your summary in that language (all of it). Do not automatically respond in English; first, figure out the conversation's language and make sure to respond in the same language. For example, if you detect the conversation is mostly in Hebrew, reply in Hebrew.\n";
         let dominantLang = "";
 
         chrome.storage.local.get('replyInDominantLanguage', function(data) {

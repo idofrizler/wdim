@@ -1,11 +1,17 @@
-TOKEN_LIMIT_WITH_BUFFER = 3500;
+TOKEN_LIMIT_WITH_BUFFER = 3700;
+
+function tokenEstimator(messageText) {
+    // const tokenCount = messageText.split(/[\s\n-]+/).length;
+    const tokenCount = messageText.length;
+    return tokenCount;
+}
 
 function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
     let messageText = "";
     let msgIndex = 0;
 
     // enumerate all messages in rowElements with index i
-    while (msgIndex < rowElements.length && messageText.split(" ").length <= tokenLimit) {
+    while (msgIndex < rowElements.length && tokenEstimator(messageText) <= tokenLimit) {
         const message = rowElements[msgIndex];
 
         const copyableText = message.querySelector('div.copyable-text');
@@ -14,13 +20,13 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
             const imageCaption = message.querySelector('span[data-testid="image-caption"]');
             if (imageCaption) { // Image + caption message
                 const caption = imageCaption.querySelector('span').textContent;
-                messageText += prePlainText.slice(0, -2) + " shared a photo with this caption: " + caption + "<br>";
+                messageText += prePlainText.slice(0, -2) + " shared a photo with this caption: " + caption + "\n";
             } else { // Regular text message, possibly with link
                 const span = copyableText.querySelector('span');
                 if (span) {
                     const hasLink = span.getAttribute('data-testid') === 'link-preview-title' ? true : false;
                     if (hasLink) {
-                        messageText += prePlainText.slice(0, -2) + " shared a link: " + span.textContent + "<br>";
+                        messageText += prePlainText.slice(0, -2) + " shared a link: " + span.textContent + "\n";
                     } else {
                         // get span of class quoted-mention inside message
                         const quotedDiv = copyableText.querySelector('div[data-testid="quoted-message"]');
@@ -37,9 +43,9 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
 
                             // if replySpan, get its textContent; else get replyImage alt
                             const replyText = replySpan ? replySpan.textContent : replyImage.alt;
-                            messageText += prePlainText.slice(0, -2) + " replied \"" + replyText + "\" to " + authorText + " message \"" + quotedMentionText + "\"<br>";    
+                            messageText += prePlainText.slice(0, -2) + " replied \"" + replyText + "\" to " + authorText + " message \"" + quotedMentionText + "\"\n";    
                         } else {
-                            messageText += prePlainText + span.textContent + "<br>";
+                            messageText += prePlainText + span.textContent + "\n";
                         }
                     }
                 } else {
@@ -59,11 +65,11 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
                     const authorButton = message.querySelector('span[testid="author"]');
                     if (authorButton) {
                         const ariaLabel = author.getAttribute('aria-label');
-                        messageText += "[" + timeStr + "] " + authorButton.textContent + " (" + ariaLabel + ")" + " shared a photo<br>";
+                        messageText += "[" + timeStr + "] " + authorButton.textContent + " (" + ariaLabel + ")" + " shared a photo\n";
                     } else {
                         // get text content from author
                         const authorText = author.textContent;
-                        messageText += "[" + timeStr + "] " + authorText + " shared a photo<br>";
+                        messageText += "[" + timeStr + "] " + authorText + " shared a photo\n";
                     }
                 }
             } else {
@@ -81,7 +87,7 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
 
 function calcTimePassed(messageText) {
     // split messageText by <br> and take first item
-    const firstMessage = messageText.split("<br>")[0];
+    const firstMessage = messageText.split("\n")[0];
 
     // split firstMessage by ] and take first item, including the ]
     const firstMessagePrefix = firstMessage.split("]")[0] + "]";
