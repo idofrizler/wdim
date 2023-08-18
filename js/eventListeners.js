@@ -7,16 +7,14 @@ document.getElementById('login-google').addEventListener('click', () => {
         if (response.error) {
             console.error(JSON.stringify(response.error, null, 2));
         } else {
-            //console.log('Token:', response.token);
-            console.log('User info: ', response.user);
-            bootstrapAfterLogin(response.user);
-            // Use the token as needed, or make API requests to fetch user data.
+            console.log('User info: ', response.userInfo);
+            bootstrapAfterLogin(response.userInfo);
         }
     });
 });
 
 document.getElementById('logout-google').addEventListener('click', () => {
-    chrome.storage.local.remove('user', function() {
+    chrome.storage.local.remove('userInfo', function() {
         console.log('Logged out. User info removed from storage');
         setVisibilityState(0);
     });

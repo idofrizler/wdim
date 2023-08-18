@@ -15,22 +15,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             }
 
             // Extract the token from the redirect URL
-            const token = redirectURL.split('#access_token=')[1].split('&')[0];
+            const userToken = redirectURL.split('#access_token=')[1].split('&')[0];
             
             // Now, use this token to get the user's info
-            const userInfoURL = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + token;
+            const userInfoURL = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=' + userToken;
 
             fetch(userInfoURL)
                 .then(response => response.json())
-                .then(user => {
+                .then(userInfo => {
                     // Store user information for later use
-                    chrome.storage.local.set({ user: user }, function() {
+                    chrome.storage.local.set({ userInfo: userInfo, userToken: userToken }, function() {
                         // check that storage setting was successful
-                        chrome.storage.local.get('user', function(data) {
+                        chrome.storage.local.get(['userInfo', 'userToken'], function(data) {
                             const timestamp = new Date().toLocaleString();
-                            console.log(`[${timestamp}] User info stored:`, data.user);
+                            console.log(`[${timestamp}] User info & token stored:`, data.userInfo);
                         });
-                        sendResponse({ status: "User info fetched and stored.", user: user });
+                        sendResponse({ status: "User info & token fetched and stored.", userInfo: userInfo });
                     });
                 })
                 .catch(error => {

@@ -2,12 +2,12 @@ import { setVisibilityState } from './util.js';
 import { sendGroupNameMessageToBackend } from './messaging.js';
 
 document.addEventListener('DOMContentLoaded', function() {
-    chrome.storage.local.get('user', function(data) {
-        const user = data.user;
+    chrome.storage.local.get('userInfo', function(data) {
+        const userInfo = data.userInfo;
 
-        if (user) {
-            console.log('User info found in storage:', user);
-            bootstrapAfterLogin(user);
+        if (userInfo) {
+            console.log('User info found in storage:', userInfo);
+            bootstrapAfterLogin(userInfo);
         } else {
             console.log('User not logged in');
             setVisibilityState(0);

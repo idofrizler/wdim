@@ -40,16 +40,16 @@ async function getSummaryDirectlyFromGPT(bodyJSON, apiKey) {
 
 async function getSummaryFromBackend(bodyJSON) {
     // Fetch user information
-    let user = await getUserInfo();
+    let userToken = await getUserToken();
 
     // Add the userId to the metadata of bodyJSON
-    if (!user || !user.id) {
+    if (!userToken) {
         throw new Error('User information not found in storage; cannot make request to backend.');
     }
     
     let assistantInstance = await getAssistant();
     bodyJSON.gptBody.messages[0].content = assistantInstance.getSystemPrompt();
-    bodyJSON.metadata.userId = user.id;
+    bodyJSON.metadata.token = userToken;
 
     const response = await fetch(BACKEND_URL, {
         method: 'POST',
