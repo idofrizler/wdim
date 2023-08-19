@@ -13,6 +13,6 @@ To use this project as a browser extension, follow these steps:
 5. The extension should now be installed and ready to use.
 
 ## Screenshots
-![Summary](image.png)
-![About page](image-1.png)
-![Settings page](image-2.png)
+![Summary](images/image.png)
+![About page](images/image-1.png)
+![Settings page](images/image-2.png)

@@ -23,13 +23,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             fetch(userInfoURL)
                 .then(response => response.json())
                 .then(userInfo => {
+
+                    const expiresIn = Number(redirectURL.split('expires_in=')[1].split('&')[0]); // get the expires_in value
+                    const expirationTime = new Date().getTime() + expiresIn * 1000; // Convert to milliseconds and add to current time
+                    
+
                     // Store user information for later use
-                    chrome.storage.local.set({ userInfo: userInfo, userToken: userToken }, function() {
-                        // check that storage setting was successful
-                        chrome.storage.local.get(['userInfo', 'userToken'], function(data) {
-                            const timestamp = new Date().toLocaleString();
-                            console.log(`[${timestamp}] User info & token stored:`, data.userInfo);
-                        });
+                    chrome.storage.local.set({ userInfo: userInfo, userToken: userToken, expirationTime: expirationTime }, function() {
                         sendResponse({ status: "User info & token fetched and stored.", userInfo: userInfo });
                     });
                 })

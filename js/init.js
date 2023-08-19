@@ -2,10 +2,11 @@ import { setVisibilityState } from './util.js';
 import { sendGroupNameMessageToBackend } from './messaging.js';
 
 document.addEventListener('DOMContentLoaded', function() {
-    chrome.storage.local.get('userInfo', function(data) {
+    chrome.storage.local.get(['userInfo', 'expirationTime'], function(data) {
         const userInfo = data.userInfo;
+        const expirationTime = data.expirationTime;
 
-        if (userInfo) {
+        if (userInfo && new Date().getTime() <= expirationTime) {
             console.log('User info found in storage:', userInfo);
             bootstrapAfterLogin(userInfo);
         } else {

@@ -14,7 +14,7 @@ document.getElementById('login-google').addEventListener('click', () => {
 });
 
 document.getElementById('logout-google').addEventListener('click', () => {
-    chrome.storage.local.remove('userInfo', function() {
+    chrome.storage.local.remove(['userInfo', 'userToken', 'expirationTime'], function() {
         console.log('Logged out. User info removed from storage');
         setVisibilityState(0);
     });
