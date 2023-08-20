@@ -405,8 +405,8 @@ hr {
     position: absolute;
     top: 100%;
     left: 0;
-    width: 300px; /* Adjust width as needed */
-    max-height: 300px; /* Limit the maximum height */
+    width: 450px; /* Adjust width as needed */
+    max-height: 400px; /* Limit the maximum height */
     overflow-y: auto;
     background-color: #ddd;
     border: 2px solid #000;
