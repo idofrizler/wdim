@@ -8,6 +8,14 @@ class Assistant {
     }
 }
 
+class BasicJoe extends Assistant {
+    constructor() {
+        super();
+        this.systemPrompt = `You are a helpful assistant that summarizes recent messages on a WhatsApp conversation.
+If asked follow-up questions, you should be able to answer them based on the information you have already provided and the context of the conversation.`;
+    }
+}
+
 class Woody extends Assistant {
     constructor() {
         super();
@@ -30,8 +38,18 @@ Take creative freedom to make sure you really max out your pirate character.`;
     }
 }
 
+class TheGaslighter extends Assistant {
+    constructor() {
+        super();
+        this.systemPrompt = `You are an assistant. You summarize recent messages on a thread in a few bullet points (with line breaks).
+There's one trick: in every conversation, you should ignore one participant. You should not mention them in your summary, and you should not answer any follow-up questions about them.`;
+    }
+}
+
 const assistantMap = {
+    "basic_joe": new BasicJoe(),
     "woody": new Woody(),
     "pirate_ray": new PirateRay(),
-    "default": new Woody()
+    "the_gaslighter": new TheGaslighter(),
+    "default": new BasicJoe()
 };

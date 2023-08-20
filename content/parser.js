@@ -31,19 +31,24 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
                         // get span of class quoted-mention inside message
                         const quotedDiv = copyableText.querySelector('div[data-testid="quoted-message"]');
                         if (quotedDiv) {
-                            const authorSpan = quotedDiv.querySelector('span[data-testid="author"]');
                             const quotedSpan = quotedDiv.querySelector('span.quoted-mention');
-                            const quotedMentionText = quotedSpan.textContent;
+                            if (quotedSpan) {
+                                const authorSpan = quotedDiv.querySelector('span[data-testid="author"]');
+                                const quotedMentionText = quotedSpan.textContent;
 
-                            // if authorSpan, get its textContent; else, simply write "Your"
-                            const authorText = authorSpan ? authorSpan.textContent + "'s" : "your";
+                                // if authorSpan, get its textContent; else, simply write "Your"
+                                const authorText = authorSpan ? authorSpan.textContent + "'s" : "your";
 
-                            const replySpan = copyableText.querySelector('span.selectable-text.copyable-text');
-                            const replyImage = copyableText.querySelector('img.selectable-text.copyable-text');
+                                const replySpan = copyableText.querySelector('span.selectable-text.copyable-text');
+                                const replyImage = copyableText.querySelector('img.selectable-text.copyable-text');
 
-                            // if replySpan, get its textContent; else get replyImage alt
-                            const replyText = replySpan ? replySpan.textContent : replyImage.alt;
-                            messageText += prePlainText.slice(0, -2) + " replied \"" + replyText + "\" to " + authorText + " message \"" + quotedMentionText + "\"\n";    
+                                // if replySpan, get its textContent; else get replyImage alt
+                                const replyText = replySpan ? replySpan.textContent : replyImage.alt;
+                                messageText += prePlainText.slice(0, -2) + " replied \"" + replyText + "\" to " + authorText + " message \"" + quotedMentionText + "\"\n";    
+                            } else {
+                                // TODO: handle quoted message without quoted-mention
+                                console.log(`Error: quoted-mention not found at index ${msgIndex}`);
+                            }
                         } else {
                             messageText += prePlainText + span.textContent + "\n";
                         }
@@ -73,7 +78,16 @@ function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
                     }
                 }
             } else {
-                console.log(`Error: message type not idenfitied at index ${msgIndex}`);        
+                const imgElement = message.querySelector('img');
+                const ariaLabelSpan = message.querySelector('span[aria-label]');
+                
+                if (imgElement && ariaLabelSpan) {
+                    const authorText = ariaLabelSpan.getAttribute('aria-label');
+                    const timeStr = message.querySelector('div[data-testid="msg-meta"]').querySelector('span').textContent;
+                    messageText += "[" + timeStr + "] " + authorText.slice(0, -1) + " shared a sticker\n";
+                } else {
+                    console.log(`Error: message type not idenfitied at index ${msgIndex}`);        
+                }
             }
         }
 
