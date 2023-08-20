@@ -1,4 +1,4 @@
-import { isUrlRelevant, getMatchesPatterns, setVisibilityState } from './util.js';
+import { isUrlRelevant, getMatchesPatterns, setVisibilityState, handleTextDirection } from './util.js';
 import { restoreMessagesFromStorage, saveFollowupElementToStorage, addFollowupElementToDOM } from './storageHandlers.js';
 
 export function sendGroupNameMessageToBackend() {
@@ -51,6 +51,9 @@ chrome.runtime.onMessage.addListener(
                     }
                     document.getElementById('original-summary').innerHTML = request.dom.messageSummary;
 
+                    // if first character of the summary is in Hebrew or Arabic, set direction of original-summary to rtl
+                    handleTextDirection(request.dom.messageSummary, 'summary-section');
+
                     chrome.storage.local.set({
                         groupName: request.dom.groupName,
                         messagesContent: request.dom.messageSummary,
@@ -63,6 +66,7 @@ chrome.runtime.onMessage.addListener(
                     setVisibilityState(3);
                     break;
                 case 'follow_up':
+                    handleTextDirection(request.dom.messageSummary, 'follow-up-section');
                     addFollowupElementToDOM(request.dom.messageSummary);
                     saveFollowupElementToStorage(request.dom.messageSummary);
                     setVisibilityState(3);

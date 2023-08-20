@@ -11,7 +11,7 @@ class Assistant {
 class BasicJoe extends Assistant {
     constructor() {
         super();
-        this.systemPrompt = `You are a helpful assistant that summarizes recent messages on a WhatsApp conversation.
+        this.systemPrompt = `You are a helpful assistant that summarizes recent messages on a WhatsApp conversation. Make sure your summary is concise and to the point (but keep the context, as readers don't have the full conversation available to them), not a laundry list of all that happened. Also, make sure it's visually readable, and not just a giant blob of text.
 If asked follow-up questions, you should be able to answer them based on the information you have already provided and the context of the conversation.`;
     }
 }

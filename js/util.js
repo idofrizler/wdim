@@ -74,3 +74,8 @@ export function setVisibilityState(state) {
     }
 }
 
+export function handleTextDirection(summaryText, textElement) {
+    if (/[\u0590-\u05FF\u0600-\u06FF]/.test(summaryText[0])) {
+        document.getElementById(textElement).style.direction = 'rtl';
+    }
+}

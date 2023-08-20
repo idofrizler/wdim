@@ -1,4 +1,4 @@
-import { setVisibilityState } from './util.js';
+import { setVisibilityState, handleTextDirection } from './util.js';
 
 export function resetStorageKeys(storageKeys) {
     chrome.storage.local.remove(storageKeys, function() {
@@ -27,6 +27,8 @@ export function restoreMessagesFromStorage(currentGroupName) {
                 }
                 
                 // conversation summary exists in storage (not just group name), load it
+                handleTextDirection(result.messagesContent, 'summary-section');
+
                 document.getElementById('original-summary').innerHTML = result.messagesContent;
                 document.getElementById('messageCount').innerHTML = result.messagesCount;
                 if (!result.timePassedString) {
@@ -36,6 +38,7 @@ export function restoreMessagesFromStorage(currentGroupName) {
                 }
 
                 if (result.followUpElements) {
+                    handleTextDirection(result.messagesContent, 'follow-up-section');
                     restoreFollowupMessagesFromStorage(result.followUpElements);
                 }
 
