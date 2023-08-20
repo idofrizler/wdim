@@ -11,7 +11,7 @@ describe("Photos shared on group chats", () => {
       const result = parseHTMLRows(rowElements);
       expect(result).toHaveProperty("messageCount");
       expect(result).toHaveProperty("messageText");
-      expect(result.messageText).toBe('[14:40] +972 58-402-0420 (Maybe Veronica) shared a photo\n');
+      expect(result.messageText).toBe('[14:40] Veronica shared a photo\n');
       expect(result.messageCount).toBe(1);  
     });
   

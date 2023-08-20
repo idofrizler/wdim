@@ -1,4 +1,4 @@
-TOKEN_LIMIT_WITH_BUFFER = 3700;
+TOKEN_LIMIT_WITH_BUFFER = 4000;
 
 function tokenEstimator(messageText) {
     // const tokenCount = messageText.split(/[\s\n-]+/).length;
@@ -6,89 +6,94 @@ function tokenEstimator(messageText) {
     return tokenCount;
 }
 
+// Helper functions
+function getFromElement(element, attr = null) {
+    if (!element) return null;
+    if (attr) return element.getAttribute(attr);
+    return element.textContent;
+}
+
+function getTimestampAuthorText(message) {
+    const timeStr = getFromElement(message.querySelector('div[data-testid="msg-meta"] span'));
+    const author = message.querySelector('span[data-testid="author"]');
+    let authorText;
+
+    if (author) {
+        authorText = getFromElement(author);
+    } else {
+        const ariaLabelSpan = message.querySelector('span[aria-label]');
+        authorText = getFromElement(ariaLabelSpan, 'aria-label').slice(0, -1);
+    }
+
+    return `[${timeStr}] ${authorText}`;
+}
+
+function identifyMessageType(message) {
+    if (message.querySelector('div.copyable-text')) return "copyableText";
+    if (message.querySelector('div[data-testid="image-thumb"]')) return "imageThumb";
+    if (message.querySelector('img') && message.querySelector('span[aria-label]')) return "sticker";
+    return "unknown";
+}
+
+function parseCopyableTextMessage(message) {
+    const copyableText = message.querySelector('div.copyable-text');
+    const prePlainText = getFromElement(copyableText, 'data-pre-plain-text');
+
+    const imageCaption = message.querySelector('span[data-testid="image-caption"]');
+    if (imageCaption) {
+        const caption = getFromElement(imageCaption.querySelector('span'));
+        return prePlainText.slice(0, -2) + " shared a photo with this caption: " + caption + "\n";
+    }
+
+    const span = copyableText.querySelector('span');
+    if (span && span.getAttribute('data-testid') === 'link-preview-title') {
+        return prePlainText.slice(0, -2) + " shared a link: " + span.textContent + "\n";
+    }
+
+    const quotedDiv = copyableText.querySelector('div[data-testid="quoted-message"]');
+    if (quotedDiv) {
+        const quotedSpan = quotedDiv.querySelector('span.quoted-mention');
+        const authorSpan = quotedDiv.querySelector('span[data-testid="author"]');
+        if (quotedSpan) {
+            const quotedMentionText = quotedSpan.textContent;
+            const authorText = authorSpan ? authorSpan.textContent + "'s" : "your";
+            const replySpan = copyableText.querySelector('span.selectable-text.copyable-text');
+            const replyImage = copyableText.querySelector('img.selectable-text.copyable-text');
+            const replyText = replySpan ? replySpan.textContent : getFromElement(replyImage, 'alt');
+            return prePlainText.slice(0, -2) + " replied \"" + replyText + "\" to " + authorText + " message \"" + quotedMentionText + "\"\n";
+        }
+    }
+
+    return prePlainText + span.textContent + "\n";
+}
+
+function parseImageThumbMessage(message) {
+    return `${getTimestampAuthorText(message)} shared a photo\n`;
+}
+
+function parseStickerMessage(message) {
+    return `${getTimestampAuthorText(message)} shared a sticker\n`;
+}
+
 function parseHTMLRows(rowElements, tokenLimit = TOKEN_LIMIT_WITH_BUFFER) {
     let messageText = "";
     let msgIndex = 0;
 
-    // enumerate all messages in rowElements with index i
     while (msgIndex < rowElements.length && tokenEstimator(messageText) <= tokenLimit) {
         const message = rowElements[msgIndex];
 
-        const copyableText = message.querySelector('div.copyable-text');
-        if (copyableText) {
-            const prePlainText = copyableText.getAttribute('data-pre-plain-text');
-            const imageCaption = message.querySelector('span[data-testid="image-caption"]');
-            if (imageCaption) { // Image + caption message
-                const caption = imageCaption.querySelector('span').textContent;
-                messageText += prePlainText.slice(0, -2) + " shared a photo with this caption: " + caption + "\n";
-            } else { // Regular text message, possibly with link
-                const span = copyableText.querySelector('span');
-                if (span) {
-                    const hasLink = span.getAttribute('data-testid') === 'link-preview-title' ? true : false;
-                    if (hasLink) {
-                        messageText += prePlainText.slice(0, -2) + " shared a link: " + span.textContent + "\n";
-                    } else {
-                        // get span of class quoted-mention inside message
-                        const quotedDiv = copyableText.querySelector('div[data-testid="quoted-message"]');
-                        if (quotedDiv) {
-                            const quotedSpan = quotedDiv.querySelector('span.quoted-mention');
-                            if (quotedSpan) {
-                                const authorSpan = quotedDiv.querySelector('span[data-testid="author"]');
-                                const quotedMentionText = quotedSpan.textContent;
-
-                                // if authorSpan, get its textContent; else, simply write "Your"
-                                const authorText = authorSpan ? authorSpan.textContent + "'s" : "your";
-
-                                const replySpan = copyableText.querySelector('span.selectable-text.copyable-text');
-                                const replyImage = copyableText.querySelector('img.selectable-text.copyable-text');
-
-                                // if replySpan, get its textContent; else get replyImage alt
-                                const replyText = replySpan ? replySpan.textContent : replyImage.alt;
-                                messageText += prePlainText.slice(0, -2) + " replied \"" + replyText + "\" to " + authorText + " message \"" + quotedMentionText + "\"\n";    
-                            } else {
-                                // TODO: handle quoted message without quoted-mention
-                                console.log(`Error: quoted-mention not found at index ${msgIndex}`);
-                            }
-                        } else {
-                            messageText += prePlainText + span.textContent + "\n";
-                        }
-                    }
-                } else {
-                    const systemSpan = message.querySelector('span[data-testid="system_message"]'); // system message
-                    const subtypeModify = message.querySelector('div[data-testid="subtype-modify"]');
-                    if (!systemSpan && !subtypeModify) {
-                        console.log(`Error: span not found at index ${msgIndex}`);
-                    }
-                }
-            }
-        } else { // Image message
-            const imageThumb = message.querySelector('div[data-testid="image-thumb"]');
-            if (imageThumb) {
-                const author = message.querySelector('span[data-testid="author"]');
-                const timeStr = message.querySelector('div[data-testid="msg-meta"]').querySelector('span').textContent;
-                if (author) {
-                    const authorButton = message.querySelector('span[testid="author"]');
-                    if (authorButton) {
-                        const ariaLabel = author.getAttribute('aria-label');
-                        messageText += "[" + timeStr + "] " + authorButton.textContent + " (" + ariaLabel + ")" + " shared a photo\n";
-                    } else {
-                        // get text content from author
-                        const authorText = author.textContent;
-                        messageText += "[" + timeStr + "] " + authorText + " shared a photo\n";
-                    }
-                }
-            } else {
-                const imgElement = message.querySelector('img');
-                const ariaLabelSpan = message.querySelector('span[aria-label]');
-                
-                if (imgElement && ariaLabelSpan) {
-                    const authorText = ariaLabelSpan.getAttribute('aria-label');
-                    const timeStr = message.querySelector('div[data-testid="msg-meta"]').querySelector('span').textContent;
-                    messageText += "[" + timeStr + "] " + authorText.slice(0, -1) + " shared a sticker\n";
-                } else {
-                    console.log(`Error: message type not idenfitied at index ${msgIndex}`);        
-                }
-            }
+        switch (identifyMessageType(message)) {
+            case "copyableText":
+                messageText += parseCopyableTextMessage(message);
+                break;
+            case "imageThumb":
+                messageText += parseImageThumbMessage(message);
+                break;
+            case "sticker":
+                messageText += parseStickerMessage(message);
+                break;
+            default:
+                console.log(`Error: message type not identified at index ${msgIndex}`);
         }
 
         // TODO: support voice messages
