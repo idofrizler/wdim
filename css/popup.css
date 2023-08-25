@@ -410,12 +410,12 @@ hr {
     overflow-y: auto;
     background-color: #ddd;
     border: 2px solid #000;
-    border-top: none;
     border-radius: 0 0 4px 4px;
     display: none;
     z-index: 999;
     padding: 0;
     margin: 0;
+    margin-top: 5px;
 }
 
 .dropdown-option {
@@ -532,3 +532,89 @@ hr {
     outline: none;
     background-color: #f7f7f7;
 }
+
+.cupid-theme {
+    background-color: #FFC0CB; /* Pink background */
+    color: #D81B60; /* Red text */
+}
+
+.cupid-theme button {
+    background-color: #FF69B4; /* Deep pink button background */
+    color: #D81B60; /* Red button text */
+}
+
+.cupid-theme a {
+    color: #D81B60; /* Red link color */
+}
+
+.cupid-theme #settings-pane {
+    background-color: #FFD1DC; /* A lighter pink for the settings pane background */
+    border: 1px solid #FF69B4; /* Deep pink border */
+}
+
+.cupid-theme #settings-pane p,
+.cupid-theme #settings-pane .settings-text {
+    color: #D81B60; /* Red text color for paragraphs and settings text within the settings pane */
+}
+
+.cupid-theme #settings-pane .settings-option {
+    border-bottom: 1px solid #FF69B4; /* Deep pink border for each settings option */
+}
+
+.cupid-theme #settings-pane a,
+.cupid-theme #settings-pane .setting-description {
+    color: #FF69B4; /* Deep pink link and description color within the settings pane */
+}
+
+.cupid-theme #settings-pane button {
+    background-color: #FF69B4; /* Deep pink button background within the settings pane */
+    color: #FFF; /* White button text */
+}
+
+/* Adjust or add more styles as necessary */
+
+.cupid-theme #settings-popup {
+    background-color: #FFD1DC; /* A lighter pink for the entire settings popup background */
+}
+
+.cupid-theme #settings-popup h2,
+.cupid-theme #settings-popup p,
+.cupid-theme #settings-popup .settings-text {
+    color: #D81B60; /* Red text color for headers and texts within the settings popup */
+}
+
+.cupid-theme #settings-popup .settings-option {
+    border-bottom: 1px solid #FF69B4; /* Deep pink border for each settings option */
+}
+
+.cupid-theme #settings-popup a,
+.cupid-theme #settings-popup .setting-description {
+    color: #FF69B4; /* Deep pink link and description color within the settings popup */
+}
+
+.cupid-theme #settings-popup button {
+    background-color: #FF69B4; /* Deep pink button background within the settings popup */
+    color: #FFF; /* White button text */
+}
+
+/* You can expand on these styles, or adjust them, as needed to fine-tune the appearance. */
+
+.cupid-theme #prompt-options {
+    background-color: #D81B60; /* Darker pink for the dropdown background */
+}
+
+.cupid-theme #prompt-options .dropdown-option {
+    background-color: #E91E63; /* Slightly lighter pink for each dropdown option */
+    border-bottom: 1px solid #C2185B; /* Even darker pink border for each dropdown option */
+}
+
+.cupid-theme #prompt-options .dropdown-option:hover {
+    background-color: #FF69B4; /* Deep pink for hover effect */
+}
+
+.cupid-theme #prompt-options p.option-title,
+.cupid-theme #prompt-options p.option-description {
+    color: #FFF; /* White text for titles and descriptions within dropdown options */
+}
+
+/* You can expand on these styles or adjust them, as needed to fine-tune the appearance. */

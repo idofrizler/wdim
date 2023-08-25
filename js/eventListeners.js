@@ -204,3 +204,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    let dropdownOptions = document.getElementById('prompt-options');
+    dropdownOptions.addEventListener('click', function(event) {
+        if(event.target.closest('.dropdown-option') && event.target.closest('.dropdown-option').getAttribute('data-assistant') === 'cupid') {
+            document.body.classList.add('cupid-theme');
+        } else {
+            document.body.classList.remove('cupid-theme');
+        }
+    });
+});
