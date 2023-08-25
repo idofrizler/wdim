@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', function() {
-    const promprtDropdownButton = document.getElementById("prompt-dropdown-btn");
+    const promptDropdownButton = document.getElementById("prompt-dropdown-btn");
     const promptOptions = document.getElementById("prompt-options");
 
     chrome.storage.local.get(["assistantName", "assistantValue"], function(data) {
@@ -129,11 +129,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const assistantValue = data.assistantValue;
             console.log(`Selected assistant: ${assistantName} (${assistantValue})`);
 
-            promprtDropdownButton.textContent = data.assistantName;
+            promptDropdownButton.textContent = data.assistantName;
+
+            if (assistantValue === "cupid") {
+                document.body.classList.add('cupid-theme');
+            }
         }
     });    
 
-    promprtDropdownButton.addEventListener("click", () => {
+    promptDropdownButton.addEventListener("click", () => {
         promptOptions.style.display = promptOptions.style.display === "block" ? "none" : "block";
     });
 
@@ -143,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const selectedTitle = option.querySelector(".option-title").textContent;
             const selectedAssistant = option.getAttribute("data-assistant"); // Get the assistant value from data-attribute
     
-            promprtDropdownButton.textContent = selectedTitle;
+            promptDropdownButton.textContent = selectedTitle;
             promptOptions.style.display = "none";
     
             chrome.storage.local.set({ assistantName: selectedTitle, assistantValue: selectedAssistant }); // Store both the assistant name and value in local storage

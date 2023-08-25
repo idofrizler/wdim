@@ -13,7 +13,14 @@ const bodyJSON = {
 };
 
 function getGroupNameFromDocument() {
-    const groupName = document.querySelector('span[data-testid="conversation-info-header-chat-title"]');
+    // get from document div element with attribute title="Profile Details"
+    const profileDetails = document.querySelector('div[title="Profile Details"]');
+
+    // get the div that is the next sibling of profileDetails, with attribute role="button"
+    const button = profileDetails ? profileDetails.nextElementSibling : null;
+
+    // get span with attribute aria-label, and get its content. This is the group name
+    const groupName = button ? button.querySelector('span[aria-label]') : null;
     if (groupName) {
         return groupName.textContent;
     }
@@ -51,7 +58,7 @@ chrome.runtime.onMessage.addListener(
                 }
                 break;
             case "get_messages":
-                const conversationPanel = document.querySelector('div[data-testid="conversation-panel-messages"]');
+                const conversationPanel = document.querySelector('div[id="main"]');
                 const messagesDiv = conversationPanel.querySelectorAll('div[role="row"]');
                 if (!groupName || !messagesDiv) {
                     chrome.runtime.sendMessage({ type: "messages", dom: "not found" });
