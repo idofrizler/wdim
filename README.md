@@ -15,5 +15,5 @@ To use this project as a browser extension, follow these steps:
 ## Screenshots
 ![Summary](images/image.png)
 ![About page](images/image-1.png)
-![Settings page](images/image-2.png)
+![Settings page](images/settings.png)
 ![Cupid mode](images/cupid-mode.jpg)
